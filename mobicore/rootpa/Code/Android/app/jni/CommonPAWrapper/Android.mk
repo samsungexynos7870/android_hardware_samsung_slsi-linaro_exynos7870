@@ -58,6 +58,7 @@ LOCAL_C_INCLUDES +=  $(MOBICORE_DIR_INC)/TlCm
 LOCAL_C_INCLUDES +=  $(LOCAL_PATH)/../../../../Common/include
 
 LOCAL_MODULE    := libcommonpawrapper
+LOCAL_PROPRIETARY_MODULE := true
 LOCAL_MODULE_TAGS := optional
 
 ifeq ($(ROOTPA_MODULE_TEST), 1)
