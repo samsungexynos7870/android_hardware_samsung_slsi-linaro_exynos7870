@@ -77,6 +77,7 @@ else
     LOCAL_MODULE    := provisioningagent
 endif
 
+LOCAL_PROPRIETARY_MODULE := true
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_LIBRARIES = MobiCoreTlcm
