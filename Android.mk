@@ -18,7 +18,8 @@ ifeq ($(TARGET_SOC), exynos7870)
 
 exynos7870_dirs += \
 	libcameraInterface \
-	libgatekeeper
+	libgatekeeper \
+	mobicore
 
 include $(call all-named-subdir-makefiles,$(exynos7870_dirs))
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 TRUSTONIC LIMITED
+ * Copyright (c) 2013-2015 TRUSTONIC LIMITED
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@
 
 #include "mcUuid.h"
 #include "mcSuid.h"
+#include "mcDriverId.h"
 
 #define MCLF_VERSION_MAJOR   2
 #define MCLF_VERSION_MINOR   5
@@ -46,13 +47,8 @@
 #define MC_SERVICE_HEADER_FLAGS_PERMANENT               (1U << 0) /**< Loaded service cannot be unloaded from MobiCore. */
 #define MC_SERVICE_HEADER_FLAGS_NO_CONTROL_INTERFACE    (1U << 1) /**< Service has no WSM control interface. */
 #define MC_SERVICE_HEADER_FLAGS_DEBUGGABLE              (1U << 2) /**< Service can be debugged. */
-#define MC_SERVICE_HEADER_FLAGS_EXTENDED_LAYOUT         (1U << 3) /**< New-layout trusted application or trusted driver. */
+#define MC_SERVICE_HEADER_FLAGS_EXTENDED_LAYOUT          (1U << 3) /**< New-layout trusted application or trusted driver. */
 
-/**
- * Hardware flags
- */
-#define MC_SERVICE_HWCFG_FLAGS_DOWNGRADE_PROTECTION     (1U << 0) /**< Service cannot be downgraded to a lower version */
-#define MC_SERVICE_HWCFG_FLAGS_RESERVED                 ~(MC_SERVICE_HWCFG_FLAGS_DOWNGRADE_PROTECTION) /**All other flags are not allowed */
 
 /** Service type.
  * The service type defines the type of executable.
@@ -112,7 +108,7 @@ typedef struct {
 
     uint32_t                numInstances;    /**< Number of instances which can be run simultaneously. */
     mcUuid_t                uuid;            /**< Loadable service unique identifier (UUID). */
-    uint32_t                driverId;        /**< If the serviceType is SERVICE_TYPE_DRIVER the Driver ID is used. */
+    mcDriverId_t            driverId;        /**< If the serviceType is SERVICE_TYPE_DRIVER the Driver ID is used. */
     uint32_t                numThreads;      /**<
                                               * <pre>
                                               * <br>Number of threads (N) in a service depending on service type.<br>
@@ -176,7 +172,7 @@ typedef struct {
  * In this case the buffer is a part of TA BSS section
  *
  * For MCLF header versions >=2.5 `mcLibData` field is not used anymore and
- * replaced by `mcLibBase` field
+ * replaced by `mcLibData` field
  * RTM itself determines actual address in this case and sets `mcLibData` field value
  *
  * `heapSize` field describes default heap parameters and
@@ -198,11 +194,11 @@ typedef struct {
 
 
 /*
- * GP API client identity (identity of the CA provided by the normal world OS).
+ * GP TA identity.
  */
 typedef struct {
-    uint32_t loginType;                     /**< GP CA login type */
-    uint8_t  loginData[16];                 /**< GP CA login data */
+    uint32_t loginType;                     /**< GP TA login type */
+    uint8_t  loginData[16];                 /**< GP TA login data */
 } mcIdentity_t;
 
 /**
@@ -227,7 +223,7 @@ typedef struct {
                                                  Value set at compile time for drivers. 0 for trustlets.
                                                  Required always. */
     uint32_t                ta_properties;  /**< address of _TA_Properties in the TA. */
-    mcIdentity_t            mcIdentity;     /**< Login data (CA identity for the GP API) */
+    mcIdentity_t            mcIdentity;     /**< Identity of GP TA */
 } mclfTextHeader_t, *mclfTextHeader_ptr;
 
 // Version 2 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 TRUSTONIC LIMITED
+ * Copyright (c) 2013-2015 TRUSTONIC LIMITED
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,23 +29,48 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef   __TEE_CLIENT_API_EXT_H__
-#define   __TEE_CLIENT_API_EXT_H__
+/* Common open/file device functions for Mobicore and GP */
 
-#if TBASE_API_LEVEL >= 9
+#ifndef __CLIENT_COMMON_H__
+#define __CLIENT_COMMON_H__
 
-#pragma GCC visibility push(default)
+#include "iclient.h"
 
-/*
- * Registers two contexts which are platform-specific, such the virtual machine
- * and the application in an Android-based environment.
- */
-TEEC_EXPORT void TEEC_TT_RegisterPlatformContext(
-    void                *globalContext,
-    void                *localContext);
+class CommonClient: public IClient {
+    struct Impl;
+    Impl* const pimpl_;
+    CommonClient();
+public:
+    ~CommonClient();
+    virtual int open();
+    int closeCheck();
+    virtual int close();
+    virtual bool isOpen() const;
+    virtual int hasOpenSessions() const;
+    virtual int openSession(struct mc_ioctl_open_session& session);
+    virtual int openTrustlet(struct mc_ioctl_open_trustlet& trustlet);
+    virtual int closeSession(uint32_t session_id);
+    virtual int notify(uint32_t session_id);
+    virtual int waitNotification(const struct mc_ioctl_wait& wait);
+    virtual int malloc(uint8_t** buffer, uint32_t length);
+    virtual int free(uint8_t* buffer, uint32_t length);
+    virtual int map(struct mc_ioctl_map& map);
+    virtual int unmap(const struct mc_ioctl_map& map);
+    virtual int getError(struct mc_ioctl_geterr& err);
+    virtual int getVersion(struct mc_version_info& version_info);
+    virtual int gpRequestCancellation(uint32_t session_id);
+    // Singleton
+    static CommonClient& getInstance() {
+        static CommonClient client;
+        return client;
+    }
+    // For test purpose
+    enum OpenMode {
+        AUTO,
+        DRIVER = 0x44525652,
+        PROXY = 0x50525859,
+    };
+    void setOpenMode(OpenMode open_mode);
+};
 
-#pragma GCC visibility pop
-
-#endif /* TBASE_API_LEVEL >= 9 */
-
-#endif /* __TEE_CLIENT_API_EXT_H__ */
+#endif // __CLIENT_COMMON_H__

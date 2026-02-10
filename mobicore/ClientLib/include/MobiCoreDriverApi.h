@@ -37,7 +37,7 @@
 #define __MC_CLIENT_LIB_API
 #endif // __cplusplus
 
-#include <inttypes.h>   // On Android, ensures we have __WORDSIZE
+
 #include <stdint.h>
 #ifndef WIN32
 #include <stdbool.h>
@@ -154,11 +154,11 @@ typedef uint32_t mcResult_t;
 #define MAKE_MC_DRV_KMOD_WITH_ERRNO(theErrno)       (MC_DRV_ERR_KERNEL_MODULE| (((theErrno)&0x0000FFFF)<<16))
 
 /** Structure of Session Handle, includes the Session ID and the Device ID the Session belongs to.
- * The session handle will be used for session-based Kinibi communication.
- * It will be passed to calls which address a communication end point in the Kinibi environment.
+ * The session handle will be used for session-based t-base communication.
+ * It will be passed to calls which address a communication end point in the t-base environment.
  */
 typedef struct {
-    uint32_t sessionId; /**< Kinibi session ID */
+    uint32_t sessionId; /**< t-base session ID */
     uint32_t deviceId; /**< Device ID the session belongs to */
 } mcSessionHandle_t;
 
@@ -190,13 +190,13 @@ typedef struct {
 #pragma GCC visibility push(default)
 #endif
 
-/** Open a new connection to a Kinibi device.
+/** Open a new connection to a t-base device.
  *
  * mcOpenDevice() initializes all device specific resources required to communicate
- * with an Kinibi instance located on the specified device in the system. If the device
+ * with an t-base instance located on the specified device in the system. If the device
  * does not exist the function will return MC_DRV_ERR_UNKNOWN_DEVICE.
  *
- * @param [in] deviceId Identifier for the Kinibi device to be used. MC_DEVICE_ID_DEFAULT refers to the default device.
+ * @param [in] deviceId Identifier for the t-base device to be used. MC_DEVICE_ID_DEFAULT refers to the default device.
  *
  * @return MC_DRV_OK if operation has been successfully completed.
  * @return MC_DRV_ERR_INVALID_OPERATION if device already opened.
@@ -205,15 +205,15 @@ typedef struct {
  * @return MC_DRV_ERR_INVALID_DEVICE_FILE if kernel module under /dev/mobicore cannot be opened
  */
 __MC_CLIENT_LIB_API mcResult_t mcOpenDevice(
-    uint32_t            deviceId
+    uint32_t deviceId
 );
 
-/** Close the connection to a Kinibi device.
+/** Close the connection to a t-base device.
  * When closing a device, active sessions have to be closed beforehand.
  * Resources associated with the device will be released.
  * The device may be opened again after it has been closed.
  *
- * @param [in] deviceId Identifier for the Kinibi device. MC_DEVICE_ID_DEFAULT refers to the default device.
+ * @param [in] deviceId Identifier for the t-base device. MC_DEVICE_ID_DEFAULT refers to the default device.
  *
  * @return MC_DRV_OK if operation has been successfully completed.
  * @return MC_DRV_ERR_UNKNOWN_DEVICE when device id is invalid.
@@ -223,13 +223,13 @@ __MC_CLIENT_LIB_API mcResult_t mcOpenDevice(
  * Uses a mutex.
  */
 __MC_CLIENT_LIB_API mcResult_t mcCloseDevice(
-    uint32_t            deviceId
+    uint32_t deviceId
 );
 
 /** Open a new session to a Trusted Application. The Trusted Application with the given UUID has to be available in the flash filesystem.
  *
- * Write MCP open message to buffer and notify Kinibi about the availability of a new command.
- * Waits till Kinibi responds with the new session ID (stored in the MCP buffer).
+ * Write MCP open message to buffer and notify t-base about the availability of a new command.
+ * Waits till t-base responds with the new session ID (stored in the MCP buffer).
  *
  * @param [in,out] session On success, the session data will be returned. Note that session.deviceId has to be the device id of an opened device.
  * @param [in] uuid UUID of the Trusted Application to be opened.
@@ -244,16 +244,16 @@ __MC_CLIENT_LIB_API mcResult_t mcCloseDevice(
  * @return MC_DRV_ERR_TRUSTED_APPLICATION_NOT_FOUND when Trusted Application or driver cannot be loaded.
  */
 __MC_CLIENT_LIB_API mcResult_t mcOpenSession(
-    mcSessionHandle_t   *session,
-    const mcUuid_t      *uuid,
-    uint8_t             *tci,
-    uint32_t            tciLen
+    mcSessionHandle_t  *session,
+    const mcUuid_t       *uuid,
+    uint8_t            *tci,
+    uint32_t           tciLen
 );
 
 /** Open a new session to a Trusted Application(Trustlet). The Trusted Application will be loaded from the memory buffer.
  *
- * Write MCP open message to buffer and notify Kinibi about the availability of a new command.
- * Waits till Kinibi responds with the new session ID (stored in the MCP buffer).
+ * Write MCP open message to buffer and notify t-base about the availability of a new command.
+ * Waits till t-base responds with the new session ID (stored in the MCP buffer).
  *
  * @param [in,out] session On success, the session data will be returned. Note that session.deviceId has to be the device id of an opened device.
  * @param [in] spid Service Provider ID(for Service provider trustlets otherwise ignored)
@@ -270,18 +270,18 @@ __MC_CLIENT_LIB_API mcResult_t mcOpenSession(
  * @return MC_DRV_ERR_TRUSTED_APPLICATION_NOT_FOUND when Trusted Application cannot be loaded.
  */
 __MC_CLIENT_LIB_API mcResult_t mcOpenTrustlet(
-    mcSessionHandle_t   *session,
-    mcSpid_t            spid,
-    uint8_t             *trustedapp,
-    uint32_t            tLen,
-    uint8_t             *tci,
-    uint32_t            tciLen
+    mcSessionHandle_t  *session,
+    mcSpid_t           spid,
+    uint8_t            *trustedapp,
+    uint32_t           tLen,
+    uint8_t            *tci,
+    uint32_t           tciLen
 );
 
 
 /** Close a Trusted Application session.
  *
- * Closes the specified Kinibi session. The call will block until the session has been closed.
+ * Closes the specified t-base session. The call will block until the session has been closed.
  *
  * @pre Device deviceId has to be opened in advance.
  *
@@ -295,7 +295,7 @@ __MC_CLIENT_LIB_API mcResult_t mcOpenTrustlet(
  * @return MC_DRV_ERR_INVALID_DEVICE_FILE when daemon cannot open trustlet file.
  */
 __MC_CLIENT_LIB_API mcResult_t mcCloseSession(
-    mcSessionHandle_t   *session
+    mcSessionHandle_t *session
 );
 
 /** Notify a session.
@@ -312,12 +312,12 @@ __MC_CLIENT_LIB_API mcResult_t mcCloseSession(
  * @return MC_DRV_ERR_UNKNOWN_DEVICE when device id of session is invalid.
  */
 __MC_CLIENT_LIB_API mcResult_t mcNotify(
-    mcSessionHandle_t   *session
+    mcSessionHandle_t *session
 );
 
 /** Wait for a notification.
  *
- * Wait for a notification issued by Kinibi for a specific session.
+ * Wait for a notification issued by t-base for a specific session.
  * The timeout parameter specifies the number of milliseconds the call will wait for a notification.
  * If the caller passes 0 as timeout value the call will immediately return. If timeout value is below 0 the call will block
  * until a notification for the session has been received.
@@ -337,8 +337,8 @@ __MC_CLIENT_LIB_API mcResult_t mcNotify(
  * @return MC_DRV_ERR_UNKNOWN_DEVICE when device id of session is invalid.
  */
 __MC_CLIENT_LIB_API mcResult_t mcWaitNotification(
-    mcSessionHandle_t   *session,
-    int32_t             timeout
+    mcSessionHandle_t  *session,
+    int32_t            timeout
 );
 
 /**
@@ -363,11 +363,11 @@ __MC_CLIENT_LIB_API mcResult_t mcWaitNotification(
  * Uses a mutex.
  */
 __MC_CLIENT_LIB_API mcResult_t mcMallocWsm(
-    uint32_t            deviceId,
-    uint32_t            align,
-    uint32_t            len,
-    uint8_t             **wsm,
-    uint32_t            wsmFlags
+    uint32_t  deviceId,
+    uint32_t  align,
+    uint32_t  len,
+    uint8_t   **wsm,
+    uint32_t  wsmFlags
 );
 
 /**
@@ -387,8 +387,8 @@ __MC_CLIENT_LIB_API mcResult_t mcMallocWsm(
  * Uses a mutex.
  */
 __MC_CLIENT_LIB_API mcResult_t mcFreeWsm(
-    uint32_t            deviceId,
-    uint8_t             *wsm
+    uint32_t  deviceId,
+    uint8_t   *wsm
 );
 
 /**
@@ -414,10 +414,10 @@ __MC_CLIENT_LIB_API mcResult_t mcFreeWsm(
  * @return MC_DRV_ERR_BULK_MAPPING when buf is already uses as bulk buffer or when registering the buffer failed.
  */
 __MC_CLIENT_LIB_API mcResult_t mcMap(
-    mcSessionHandle_t   *session,
-    void                *buf,
-    uint32_t            len,
-    mcBulkMap_t         *mapInfo
+    mcSessionHandle_t  *session,
+    void               *buf,
+    uint32_t           len,
+    mcBulkMap_t        *mapInfo
 );
 
 /**
@@ -441,9 +441,9 @@ __MC_CLIENT_LIB_API mcResult_t mcMap(
  * @return MC_DRV_ERR_BULK_UNMAPPING when buf was not registered earlier or when unregistering failed.
  */
 __MC_CLIENT_LIB_API mcResult_t mcUnmap(
-    mcSessionHandle_t   *session,
-    void                *buf,
-    mcBulkMap_t         *mapInfo
+    mcSessionHandle_t  *session,
+    void               *buf,
+    mcBulkMap_t        *mapInfo
 );
 
 /**
@@ -451,7 +451,7 @@ __MC_CLIENT_LIB_API mcResult_t mcUnmap(
  * After the request the stored error code will be deleted.
  *
  * @param [in] session Session handle with information of the deviceId and the sessionId.
- * @param [out] lastErr >0 Trusted Application has terminated itself with this value, <0 Trusted Application is dead because of an error within Kinibi (e.g. Kernel exception).
+ * @param [out] lastErr >0 Trusted Application has terminated itself with this value, <0 Trusted Application is dead because of an error within t-base (e.g. Kernel exception).
  * See also notificationPayload_t enum in MCI definition at "mcinq.h".
  *
  * @return MC_DRV_OK if operation has been successfully completed.
@@ -460,15 +460,15 @@ __MC_CLIENT_LIB_API mcResult_t mcUnmap(
  * @return MC_DRV_ERR_UNKNOWN_DEVICE when device id of session is invalid.
  */
 __MC_CLIENT_LIB_API mcResult_t mcGetSessionErrorCode(
-    mcSessionHandle_t   *session,
-    int32_t             *lastErr
+    mcSessionHandle_t  *session,
+    int32_t            *lastErr
 );
 
 /**
- * Get Kinibi version information of a device.
+ * Get t-base version information of a device.
  *
  * @param [in] deviceId of an open device.
- * @param [out] versionInfo Kinibi version info.
+ * @param [out] versionInfo t-base version info.
  *
  * @return MC_DRV_OK if operation has been successfully completed.
  * @return MC_DRV_ERR_UNKNOWN_DEVICE when device is not open.
@@ -477,7 +477,7 @@ __MC_CLIENT_LIB_API mcResult_t mcGetSessionErrorCode(
  */
 __MC_CLIENT_LIB_API mcResult_t mcGetMobiCoreVersion(
     uint32_t  deviceId,
-    mcVersionInfo_t     *versionInfo
+    mcVersionInfo_t *versionInfo
 );
 #ifndef WIN32
 #pragma GCC visibility pop

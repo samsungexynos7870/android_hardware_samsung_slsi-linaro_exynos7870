@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /** Log wrapper for Android.
- * Maps LOG_*() macros to __android_log_print() if ANDROID is defined.
+ * Maps LOG_*() macros to __android_log_print() if LOG_ANDROID is defined.
  * Adds some extra info to log output like LOG_TAG, file name and line number.
  */
 #ifndef TLCWRAPPERANDROIDLOG_H_
@@ -67,13 +67,13 @@
  * Error logging
  */
 
-/** LOG_D_BUF(message, blob, sizeOfBlob)
+/** LOG_D_BUF(szDescriptor, blob, sizeOfBlob)
  * Binary logging, line-wise output to LOG_D
  */
 
 #define DUMMY_FUNCTION()    do {} while(0)
 
-#ifdef ANDROID
+#ifdef LOG_ANDROID
 #include <android/log.h>
 // log to adb logcat
 #ifdef NDEBUG // no logging in debug version
@@ -84,9 +84,8 @@
 #endif
     #define LOG_I(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt " [%s:%d]", ##__VA_ARGS__, __FILE__, __LINE__)
     #define LOG_W(fmt, ...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, fmt " [%s:%d]", ##__VA_ARGS__, __FILE__, __LINE__)
-    #define LOG_E(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt " [%s:%d]", ##__VA_ARGS__, __FILE__, __LINE__)
     #define _LOG_E(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
-#endif // defined(ANDROID)
+#endif // defined(LOG_ANDROID)
 
 
 #ifdef LOG_TIZEN
@@ -98,7 +97,6 @@
 #endif
     #define LOG_I(...)  SLOGI(__VA_ARGS__)
     #define LOG_W(...)  SLOGW(__VA_ARGS__)
-    #define LOG_E(...)  SLOGW(__VA_ARGS__)
     #define _LOG_E(...) SLOGE(__VA_ARGS__)
 #endif // defined(LOG_TIZEN)
 
@@ -129,15 +127,14 @@
 #endif
     #define LOG_I(...)  _LOG_x("I",__VA_ARGS__)
     #define LOG_W(...)  _LOG_x("W",__VA_ARGS__)
-    #define LOG_E(...)  _LOG_x("W",__VA_ARGS__)
     #define _LOG_E(...)  _LOG_x("E",__VA_ARGS__)
 #endif // !defined(_LOG_E): neither Android nor Tizen
 
 
-/** LOG_C() (critical) needs to be more prominent:
+/** LOG_E() needs to be more prominent:
  * Display "*********** ERROR ***********" before actual error message.
  */
-#define LOG_C(...) \
+#define LOG_E(...) \
             do { \
                 _LOG_E("  *****************************"); \
                 _LOG_E("  *** ERROR: " __VA_ARGS__); \
@@ -151,17 +148,15 @@
 #ifdef NDEBUG
     #define LOG_D_BUF(...)      DUMMY_FUNCTION()
 #else
-    #define LOG_D_BUF(f, b, s)  LOG_x_BUF(__FILE__, __LINE__, f, b, s, true)
+    #define LOG_D_BUF(f, b, s)  LOG_x_BUF(f, b, s, true)
 #endif
-#define LOG_I_BUF(f, b, s)      LOG_x_BUF(__FILE__, __LINE__, f, b, s, false)
+#define LOG_I_BUF(f, b, s)      LOG_x_BUF(f, b, s, false)
 
 #ifndef WIN32
 __attribute__ ((unused))
 #endif
 static void LOG_x_BUF(
-        const char*     file,
-        int             line,
-        const char*     message,
+        const char*     szDescriptor,
         const void*     blob,
         size_t          sizeOfBlob,
         bool            debug
@@ -179,45 +174,28 @@ static void LOG_x_BUF(
     uint32_t addr = 0;
     uint32_t i = 0;
 
-    if (debug) {
-        LOG_D("Log buffer from %s:%d", file, line);
-    } else {
-        LOG_I("Log buffer from %s:%d", file, line);
-    }
-
-    if (NULL != message)
+    if (NULL != szDescriptor)
     {
-        index += sprintf(&buffer[index], "%s", message);
+        index += sprintf(&buffer[index], "%s", szDescriptor);
     }
 
     if (moreThanOneLine)
     {
-        if (NULL == message)
+        if (NULL == szDescriptor)
         {
             index += sprintf(&buffer[index], "memory dump");
         }
         index += sprintf(&buffer[index], " (%p, %zu bytes)", blob,sizeOfBlob);
-        if (debug) {
-            LOG_D("%s", buffer);
-        } else {
-            LOG_I("%s", buffer);
-        }
+        LOG_D("%s", buffer);
         index = 0;
     }
-    else if (NULL == message)
+    else if (NULL == szDescriptor)
     {
         index += sprintf(&buffer[index], "Data at %p: ", blob);
     }
 
-    if ((sizeOfBlob == 0) || (NULL == blob))
-    {
-        if (index) {
-            if (debug) {
-                LOG_D("%s", buffer);
-            } else {
-                LOG_I("%s", buffer);
-            }
-        }
+    if(sizeOfBlob == 0) {
+        LOG_D("%s", buffer);
     }
     else
     {

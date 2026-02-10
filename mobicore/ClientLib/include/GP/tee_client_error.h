@@ -132,5 +132,14 @@
  **/
 #define TEEC_ERROR_STORAGE_NO_SPACE       ((TEEC_Result)0xFFFF3041)
 
+/*------------------------------------------------------------------------------
+   Implementation-specific errors 
+------------------------------------------------------------------------------*/
+#define TEEC_TBASE_ERROR_STORAGE_ITEM_EXISTS        ((TEEC_Result)0x80000000)
+#define TEEC_TBASE_ERROR_STORAGE_CORRUPTED          ((TEEC_Result)0x80000001)
+#define TEEC_TBASE_ERROR_STORAGE_UNREACHABLE        ((TEEC_Result)0x80000002)
+#define TEEC_TBASE_ERROR_NO_MORE_HANDLES            ((TEEC_Result)0x80000003)
+#define TEEC_TBASE_ERROR_ITEM_EXISTS                ((TEEC_Result)0x80000004)
+
 #endif /* __TEE_CLIENT_ERROR_H__ */
 

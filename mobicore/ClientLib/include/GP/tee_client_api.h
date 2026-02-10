@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 TRUSTONIC LIMITED
+ * Copyright (c) 2013-2015 TRUSTONIC LIMITED
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,18 +36,17 @@
 #ifndef   __TEE_CLIENT_API_H__
 #define   __TEE_CLIENT_API_H__
 
-#if (!defined(TEEC_EXPORT)) && defined(__cplusplus)
-#define TEEC_EXPORT       extern "C"
-#else
-#define TEEC_EXPORT
-#endif // __cplusplus
-
-#include "tee_client_api_ext.h"
 #include "tee_client_types.h"
 #include "tee_client_error.h"
 
 #if TBASE_API_LEVEL >= 3
 #include "tee_client_api_imp.h"
+
+#if (!defined(TEEC_EXPORT)) && defined(__cplusplus)
+#define TEEC_EXPORT       extern "C"
+#else
+#define TEEC_EXPORT
+#endif // __cplusplus
 
 /* The header tee_client_api_imp.h must define implementation-dependent
    types, constants and macros.
@@ -105,10 +104,10 @@ typedef union {
 } TEEC_Parameter;
 
 typedef struct TEEC_Operation {
-    uint32_t            started;
-    uint32_t            paramTypes;
-    TEEC_Parameter      params[4];
-    TEEC_Operation_IMP  imp;
+    volatile uint32_t    started;
+    uint32_t             paramTypes;
+    TEEC_Parameter       params[4];
+    TEEC_Operation_IMP   imp;
 } TEEC_Operation;
 
 

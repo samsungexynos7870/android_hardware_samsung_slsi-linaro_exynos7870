@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 TRUSTONIC LIMITED
+ * Copyright (c) 2013-2015 TRUSTONIC LIMITED
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@
 #define AT_MAGIC_SIZE           8
 #define AT_SIZE_SIZE            sizeof(uint32_t)
 #define AT_VERSION_SIZE         sizeof(uint32_t)
-#define AT_UUID_SIZE            sizeof(TEEC_UUID)
+#define AT_UUID_SIZE            sizeof(TEE_UUID)
 
 // Sizes of the fields used to generate signature
 #define AT_TAG_SIZE             20
