@@ -77,7 +77,7 @@ else
     LOCAL_MODULE    := provisioningagent
 endif
 
-LOCAL_MODULE_TAGS := debug eng optional
+LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_LIBRARIES = MobiCoreTlcm
 LOCAL_SHARED_LIBRARIES = libMcClient libMcRegistry

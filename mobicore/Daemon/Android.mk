@@ -11,7 +11,6 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libMcRegistry
-LOCAL_MODULE_TAGS := eng
 LOCAL_PROPRIETARY_MODULE := true
 
 LOCAL_CFLAGS += -DLOG_TAG=\"McRegistry\"
@@ -41,7 +40,6 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := mcDriverDaemon
-LOCAL_MODULE_TAGS := eng
 LOCAL_CFLAGS += -DLOG_TAG=\"McDaemon\"
 LOCAL_CFLAGS += -DTBASE_API_LEVEL=5
 LOCAL_CFLAGS += -Wall -Wextra
@@ -113,7 +111,6 @@ ifndef TRUSTONIC_ANDROID_LEGACY_SUPPORT
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := mcDriverDaemon_static
-LOCAL_MODULE_TAGS := eng
 LOCAL_CFLAGS += -DLOG_TAG=\"McDaemon\"
 LOCAL_CFLAGS += -DTBASE_API_LEVEL=5
 LOCAL_CFLAGS += -Wall -Wextra

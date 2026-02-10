@@ -7,7 +7,6 @@ ifndef TRUSTONIC_ANDROID_LEGACY_SUPPORT
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libMcProxy
-LOCAL_MODULE_TAGS := eng
 
 LOCAL_CFLAGS := -fvisibility=hidden
 LOCAL_CFLAGS += -DTBASE_API_LEVEL=5
@@ -50,7 +49,6 @@ endif # !TRUSTONIC_ANDROID_LEGACY_SUPPORT
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libMcClient
-LOCAL_MODULE_TAGS := eng
 LOCAL_PROPRIETARY_MODULE := true
 
 LOCAL_CFLAGS := -fvisibility=hidden
@@ -122,7 +120,6 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libMcClient_static
-LOCAL_MODULE_TAGS := eng
 
 LOCAL_CFLAGS := -fvisibility=hidden
 LOCAL_CFLAGS += -DTBASE_API_LEVEL=5
