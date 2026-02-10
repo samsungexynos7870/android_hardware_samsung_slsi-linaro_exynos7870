@@ -51,6 +51,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := libMcClient
 LOCAL_MODULE_TAGS := eng
+LOCAL_PROPRIETARY_MODULE := true
 
 LOCAL_CFLAGS := -fvisibility=hidden
 LOCAL_CFLAGS += -DTBASE_API_LEVEL=5

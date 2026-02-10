@@ -677,9 +677,6 @@ TEEC_Result TEEC_OpenSession (
             case EINVAL:
                 teecRes = TEEC_ERROR_NOT_IMPLEMENTED;
                 break;
-            case ENOSPC:
-                teecRes = TEEC_ERROR_OUT_OF_MEMORY;
-                break;
             case ECONNREFUSED:
                 teecRes = TEEC_ERROR_SD_BLOCKED;
                 break;

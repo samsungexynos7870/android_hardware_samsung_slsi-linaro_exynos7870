@@ -67,6 +67,12 @@
 #define MC_REGISTRY_ALL      0
 #define MC_REGISTRY_WRITABLE 1
 
+/*##################################
+#mobicore_security_team_add
+##################################*/
+#define MC_AUTH_TOKEN_DEFAULT_PATH "/efs"
+/*##################################*/
+
 #define AUTH_TOKEN_FILE_NAME "00000000.authtokcont"
 #define AUTH_TOKEN_FILE_NAME_BACKUP_SUFFIX ".backup"
 #define ENV_MC_AUTH_TOKEN_PATH "MC_AUTH_TOKEN_PATH"
@@ -80,6 +86,13 @@
 
 static std::vector<std::string> search_paths;
 static std::string tb_storage_path;
+
+/*##################################
+#mobicore_security_team_add
+##################################*/
+static const std::string KP_TRUSTLET_UUID = "ffffffff00000000000000000000000c.tlbin";
+static const std::string KP_TRUSTLET_PATH = "/efs/prov";
+/*##################################*/
 
 //------------------------------------------------------------------------------
 static std::string byteArrayToString(const void *bytes, size_t elems)
@@ -135,6 +148,24 @@ static std::string getAuthTokenFilePath()
     return authTokenPath + "/" + AUTH_TOKEN_FILE_NAME;
 }
 
+/*##################################
+#mobicore_security_team_add
+##################################*/
+//------------------------------------------------------------------------------
+static std::string getKPTlRegistryPath()
+{
+    std::string registryPath;
+
+    // use the /efs/prov registry path.
+    registryPath = KP_TRUSTLET_PATH;
+    LOG_I(" Using default registry path for KP trustlet %s", registryPath.c_str());
+
+    assert(registryPath.length() != 0);
+
+    return registryPath;
+}
+/*##################################*/
+
 //------------------------------------------------------------------------------
 static std::string getAuthTokenFilePathBackup()
 {
@@ -184,7 +215,17 @@ static std::string getTlBinFilePath(const mcUuid_t *uuid, int registry)
     std::string path_rw_registry = search_paths[0] + "/" + byteArrayToString(uuid, sizeof(*uuid)) + TL_BIN_FILE_EXT;
 
     if ((registry == MC_REGISTRY_ALL) && (search_paths.size() > 1)) {
-        std::string path_ro_registry = search_paths[1] + "/" + byteArrayToString(uuid, sizeof(*uuid)) + TL_BIN_FILE_EXT;
+        /*##################################
+	      #mobicore_security_team_add
+	      ##################################*/
+        std::string path_ro_registry;
+        std::string Suuid = byteArrayToString(uuid, sizeof(*uuid)) + TL_BIN_FILE_EXT;
+        if(Suuid.compare(KP_TRUSTLET_UUID) == 0) {
+            path_ro_registry = getKPTlRegistryPath()+"/" + byteArrayToString(uuid, sizeof(*uuid)) + TL_BIN_FILE_EXT;
+        } else {
+            path_ro_registry = search_paths[1] + "/" + byteArrayToString(uuid, sizeof(*uuid)) + TL_BIN_FILE_EXT;
+        }
+        /*##################################*/
         struct stat tmp;
         if (stat(path_ro_registry.c_str(), &tmp) == 0) {
             return path_ro_registry;

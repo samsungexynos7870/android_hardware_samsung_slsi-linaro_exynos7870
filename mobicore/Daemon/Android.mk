@@ -12,6 +12,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := libMcRegistry
 LOCAL_MODULE_TAGS := eng
+LOCAL_PROPRIETARY_MODULE := true
 
 LOCAL_CFLAGS += -DLOG_TAG=\"McRegistry\"
 LOCAL_CFLAGS += -Wall -Wextra
@@ -46,6 +47,11 @@ LOCAL_CFLAGS += -DTBASE_API_LEVEL=5
 LOCAL_CFLAGS += -Wall -Wextra
 LOCAL_CFLAGS += -std=c++11
 LOCAL_CFLAGS += -DLOG_ANDROID
+##################################
+#mobicore_security_team_add
+##################################
+LOCAL_CFLAGS += -Wno-type-limits
+##################################
 ifdef TRUSTONIC_ANDROID_LEGACY_SUPPORT
 LOCAL_CFLAGS += -DWITHOUT_PROXY
 endif # TRUSTONIC_ANDROID_LEGACY_SUPPORT
@@ -69,9 +75,7 @@ LOCAL_STATIC_LIBRARIES += \
 	libMcProxy
 
 LOCAL_SHARED_LIBRARIES += \
-	libprotobuf-cpp-lite \
-	libcutils
-
+	libprotobuf-cpp-lite
 endif # !TRUSTONIC_ANDROID_LEGACY_SUPPORT
 else # !NDK
 # Local build
@@ -84,6 +88,12 @@ LOCAL_STATIC_LIBRARIES += \
 	libprotobuf-cpp-lite
 endif # !TRUSTONIC_ANDROID_LEGACY_SUPPORT
 endif # NDK
+
+##################################
+#mobicore_security_team_add
+##################################
+LOCAL_SHARED_LIBRARIES += $(GLOBAL_LIBRARIES) libcutils
+##################################
 
 LOCAL_SRC_FILES := \
 	src/Connection.cpp \
@@ -112,16 +122,30 @@ LOCAL_CFLAGS += -DLOG_ANDROID
 LOCAL_CFLAGS += -DWITHOUT_FSD
 LOCAL_CFLAGS += -DWITHOUT_PROXY
 
+##################################
+#mobicore_security_team_add
+##################################
+LOCAL_CFLAGS += -Wno-type-limits
+##################################
+
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_STATIC_LIBRARIES := libMcClient_static
+LOCAL_STATIC_LIBRARIES += libcutils
+
 ifeq ($(APP_PROJECT_PATH),)
 LOCAL_STATIC_LIBRARIES += \
-	liblog libc libc++_static libcutils
+	liblog libc libc++_static
 
 else # !NDK
 # Local build
 LOCAL_LDLIBS := -llog
 endif # NDK
+
+##################################
+#mobicore_security_team_add
+##################################
+LOCAL_SHARED_LIBRARIES += $(GLOBAL_LIBRARIES) libcutils
+##################################
 
 LOCAL_SRC_FILES := \
 	src/Connection.cpp \

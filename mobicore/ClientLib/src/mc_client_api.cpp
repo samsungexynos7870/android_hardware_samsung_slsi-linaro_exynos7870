@@ -95,7 +95,6 @@ static inline int wsms_add(uint8_t* wsm, uint32_t len) {
         wsms[wsms_length].wsm = wsm;
         wsms[wsms_length].len = len;
         wsms_length++;
-        LOG_D("add %p %d", wsm, len);
     }
     pthread_mutex_unlock(&wsms_mutex);
     return ret;
@@ -117,7 +116,6 @@ static inline int wsms_remove(uint8_t* wsm) {
     } else {
         /* Replace WSM with last so the first free element remains wsms[wsms_length] */
         wsms[i] = wsms[--wsms_length];
-        LOG_D("rm %p", wsm);
     }
     pthread_mutex_unlock(&wsms_mutex);
     return ret;
@@ -129,7 +127,6 @@ static inline int wsms_len(uint8_t* wsm) {
     for (size_t i = 0; i < wsms_length; i++) {
         if (wsms[i].wsm == wsm) {
             len = wsms[i].len;
-            LOG_D("rm len %p %d", wsm, len);
             break;
         }
     }
@@ -137,12 +134,11 @@ static inline int wsms_len(uint8_t* wsm) {
     return len;
 }
 
-static inline struct maplen wsms_getLast(void) {
+static inline struct maplen wsms_removeLast(void) {
     struct maplen wsm;
     pthread_mutex_lock(&wsms_mutex);
     if (wsms_length > 0) {
-        wsm = wsms[wsms_length - 1];
-        LOG_D("rm last %p", wsm.wsm);
+        wsm = wsms[--wsms_length];
     } else {
         wsm.wsm = NULL;
         // To make Coverity happy
@@ -283,7 +279,7 @@ __MC_CLIENT_LIB_API mcResult_t mcCloseDevice(
 
     // Free all remaining WSMs
     while (true) {
-        struct maplen wsm = wsms_getLast();
+        struct maplen wsm = wsms_removeLast();
         if (wsm.wsm == NULL) {
             break;
         }

@@ -413,11 +413,7 @@ typedef struct{
         free((char*)((provisioningparams_t*)paramsP)->tltInstallationDataP->tltPukHashP);
         free(((provisioningparams_t*)paramsP)->tltInstallationDataP);
     }
-    if (paramsP != NULL) {
-        free(paramsP);
-        paramsP = NULL;
-    }
-
+    
     LOGD("<<provisioningThreadFunction");
 #ifdef WIN32
 	ExitThread(NULL);

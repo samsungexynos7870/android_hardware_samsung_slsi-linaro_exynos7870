@@ -308,7 +308,7 @@ int FileSystem::open() {
 
     // Create Tbase storage directory if necessary, parent is assumed to exist
     if (::mkdir(storage_dir_name.c_str(), 0700) && (errno != EEXIST)) {
-        LOG_ERRNO("creating storage folder");
+        //LOG_ERRNO("creating storage folder");
         // Do not return any error and block deamon boot flow or stop FSD thread.
         // Just print a "warning/not critical error message".
         // Directory could also be created by platform at initialization time.

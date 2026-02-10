@@ -29,20 +29,28 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <string>
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdint.h>
 #include <string.h>
 #include <signal.h>
 #include <libgen.h>
+#include <sys/types.h>
 
 #include <log.h>
 
-#include "cutils/properties.h"
 #include "mcVersion.h"
 #include "PrivateRegistry.h"
 #include "MobiCoreDriverDaemon.h"
 #include "buildTag.h"
+
+/*##################################
+#mobicore_security_team_add
+##################################*/
+#include <cutils/properties.h>
+/*##################################*/
 
 #define DRIVER_TCI_LEN 4096
 
@@ -55,9 +63,12 @@ static SecureWorld* g_secure_world;
 static
 int printUsage(char *path)
 {
-    fprintf(stderr, "<t-base Driver Daemon %u.%u. \"%s\" %s %s\n",
+    /* ExySp */
+//    fprintf(stderr, "<t-base Driver Daemon %u.%u. \"%s\" %s %s\n",
+    fprintf(stderr, "<t-base Driver Daemon %u.%u. \"%s\" \n",
             DAEMON_VERSION_MAJOR, DAEMON_VERSION_MINOR,
-            MOBICORE_COMPONENT_BUILD_TAG, __DATE__, __TIME__);
+            MOBICORE_COMPONENT_BUILD_TAG);
+//            MOBICORE_COMPONENT_BUILD_TAG, __DATE__, __TIME__);
     fprintf(stderr, "usage: %s [-hbr]\n", basename(path));
     fprintf(stderr, "Start <t-base Daemon\n\n");
     fprintf(stderr, "-h\t\tshow this help\n");
@@ -144,7 +155,10 @@ static void terminateDaemon(int signum)
     }
 }
 
-MobiCoreDriverDaemon::MobiCoreDriverDaemon():
+MobiCoreDriverDaemon::MobiCoreDriverDaemon(const std::vector<std::string>& registry_paths):
+#ifndef WITHOUT_FSD
+    m_filesystem(registry_paths),
+#endif
     m_reg_server(this, SOCK_PATH)
 {
 }
@@ -413,11 +427,12 @@ int MobiCoreDriverDaemon::run()
     m_filesystem.open();
 #endif
     m_reg_server.start();
-
-    /* Exy SP: To let the other daemon which calls TA know
-	if secureOS daemon is loaded or not */
-   LOG_I("McDaemon.Server was loaded");
-   property_set("secure_os.init", "done");
+    
+    /*##################################
+    #mobicore_security_team_add
+    ##################################*/
+    property_set("sys.mobicoredaemon.enable", "true");
+    /*##################################*/
 
 #ifndef WITHOUT_PROXY
     m_proxy_server.open();
@@ -493,9 +508,16 @@ int main(int argc, char *args[])
 
     // Default registry paths if none specified (for Android)
     if (registry_paths.empty()) {
-        registry_paths.push_back("/data/app/mcRegistry");
+        registry_paths.push_back("/data/misc/mcRegistry");
+        /*##################################
+        #mobicore_security_team_add
+        ##################################*/
+        registry_paths.push_back("/efs/prov");
+        /*##################################*/
+        registry_paths.push_back("/vendor/app/mcRegistry");
         registry_paths.push_back("/system/app/mcRegistry");
     }
+
     setSearchPaths(registry_paths);
     LOG_D("Registry search paths:");
     for (auto path = registry_paths.begin(); path != registry_paths.end(); path++) {
@@ -503,7 +525,7 @@ int main(int argc, char *args[])
     }
 
     // Open the device before becoming a daemon
-    MobiCoreDriverDaemon mobiCoreDriverDaemon;
+    MobiCoreDriverDaemon mobiCoreDriverDaemon(registry_paths);
     if (mobiCoreDriverDaemon.init(drivers)) {
         return EXIT_FAILURE;
     }
@@ -544,7 +566,6 @@ int main(int argc, char *args[])
             DAEMON_VERSION_MINOR);
 
     LOG_I("%s", MOBICORE_COMPONENT_BUILD_TAG);
-    LOG_I("Build timestamp is %s %s", __DATE__, __TIME__);
 
     ret = mobiCoreDriverDaemon.run();
 

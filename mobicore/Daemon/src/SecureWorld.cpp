@@ -395,6 +395,8 @@ int SecureWorld::listen()
         LOG_D("Request %d received (ID %u)", request.command, request.request_id);
         if (pimpl_->command_id != request.request_id) {
             LOG_E("Request ID counters are not synchronised (expected %u, got %u)", pimpl_->command_id, request.request_id);
+	    /* ExySp: for debug */
+	    system("echo c > /proc/sysrq-trigger");
             break;
         }
 
