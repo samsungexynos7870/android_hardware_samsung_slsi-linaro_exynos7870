@@ -47,6 +47,12 @@ LOCAL_CFLAGS += -Wall -Wextra
 LOCAL_CFLAGS += -std=c++11
 LOCAL_CFLAGS += -DLOG_ANDROID
 LOCAL_CFLAGS += -DWITHOUT_PROXY
+
+# misc
+LOCAL_CFLAGS += -Wno-gnu-variable-sized-type-not-at-end
+LOCAL_CFLAGS += -Wno-unused-lambda-capture
+LOCAL_CFLAGS += -Wno-date-time
+
 ##################################
 #mobicore_security_team_add
 ##################################
@@ -117,6 +123,11 @@ LOCAL_CFLAGS += -std=c++11
 LOCAL_CFLAGS += -DLOG_ANDROID
 LOCAL_CFLAGS += -DWITHOUT_FSD
 LOCAL_CFLAGS += -DWITHOUT_PROXY
+
+# misc
+LOCAL_CFLAGS += -Wno-gnu-variable-sized-type-not-at-end
+LOCAL_CFLAGS += -Wno-unused-lambda-capture
+LOCAL_CFLAGS += -Wno-date-time
 
 ##################################
 #mobicore_security_team_add
