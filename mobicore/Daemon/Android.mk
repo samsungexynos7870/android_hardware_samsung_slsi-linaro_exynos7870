@@ -46,6 +46,7 @@ LOCAL_CFLAGS += -DTBASE_API_LEVEL=5
 LOCAL_CFLAGS += -Wall -Wextra
 LOCAL_CFLAGS += -std=c++11
 LOCAL_CFLAGS += -DLOG_ANDROID
+LOCAL_CFLAGS += -DWITHOUT_PROXY
 ##################################
 #mobicore_security_team_add
 ##################################
@@ -70,8 +71,6 @@ LOCAL_C_INCLUDES += \
 LOCAL_SHARED_LIBRARIES += \
 	libstlport
 else # TRUSTONIC_ANDROID_LEGACY_SUPPORT
-LOCAL_STATIC_LIBRARIES += \
-	libMcProxy
 
 LOCAL_SHARED_LIBRARIES += \
 	libprotobuf-cpp-lite
@@ -83,7 +82,6 @@ ifndef TRUSTONIC_ANDROID_LEGACY_SUPPORT
 LOCAL_CFLAGS += -static-libstdc++
 
 LOCAL_STATIC_LIBRARIES += \
-	libMcProxy \
 	libprotobuf-cpp-lite
 endif # !TRUSTONIC_ANDROID_LEGACY_SUPPORT
 endif # NDK
