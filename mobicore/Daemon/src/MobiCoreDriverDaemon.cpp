@@ -438,7 +438,7 @@ int MobiCoreDriverDaemon::run()
     /*##################################
     #mobicore_security_team_add
     ##################################*/
-    property_set("sys.mobicoredaemon.enable", "true");
+    property_set("vendor.sys.mobicoredaemon.enable", "true");
     /*##################################*/
 
 #ifndef WITHOUT_PROXY
