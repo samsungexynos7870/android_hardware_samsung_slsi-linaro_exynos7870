@@ -508,7 +508,9 @@ int main(int argc, char *args[])
 
     // Default registry paths if none specified (for Android)
     if (registry_paths.empty()) {
-        registry_paths.push_back("/data/misc/mcRegistry");
+        //registry_paths.push_back("/data/misc/mcRegistry");
+        // hack
+        registry_paths.push_back("/vendor/app/mcRegistry");
         /*##################################
         #mobicore_security_team_add
         ##################################*/
@@ -627,3 +629,4 @@ void MobiCoreDriverDaemon::installEndorsementToken(void)
 	    }
 	}
 }
+
