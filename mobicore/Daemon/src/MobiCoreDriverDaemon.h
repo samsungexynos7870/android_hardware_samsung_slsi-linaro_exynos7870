@@ -121,12 +121,8 @@ class MobiCoreDriverDaemon: public ConnectionHandler
     FileSystem m_filesystem;
 #endif
     Server  m_reg_server;
-    std::vector<std::string> m_registry_paths;  // Moved to end to match initialization order
-    
 public:
-    //Change constructor to accept registry_paths parameter
-    MobiCoreDriverDaemon(const std::vector<std::string>& registry_paths);
-    
+    MobiCoreDriverDaemon();
     int init(const std::vector<std::string>& drivers);
     int run (void);
 };

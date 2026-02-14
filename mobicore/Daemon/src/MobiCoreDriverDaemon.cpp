@@ -156,18 +156,11 @@ static void terminateDaemon(int signum)
 }
 
 MobiCoreDriverDaemon::MobiCoreDriverDaemon(const std::vector<std::string>& registry_paths):
-    // Initialize in the SAME ORDER as declared in the class
-    m_secure_world(),
-#ifndef WITHOUT_PROXY
-    m_proxy_server(),
-#endif
 #ifndef WITHOUT_FSD
-    m_filesystem(),  // Use default constructor, NOT m_filesystem(registry_paths)
+    m_filesystem(registry_paths),
 #endif
-    m_reg_server(this, SOCK_PATH),
-    m_registry_paths(registry_paths)
+    m_reg_server(this, SOCK_PATH)
 {
-    // Constructor
 }
 
 //------------------------------------------------------------------------------
