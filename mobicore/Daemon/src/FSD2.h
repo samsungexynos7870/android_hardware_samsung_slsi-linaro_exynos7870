@@ -32,6 +32,9 @@
 #ifndef FSD2_H_
 #define FSD2_H_
 
+#include <string>
+#include <vector>
+
 class FileSystem {
     struct Impl;
     Impl* const pimpl_;
@@ -41,7 +44,7 @@ public:
     /**
      * Constructor.
      */
-    FileSystem();
+    FileSystem(const std::vector<std::string>& registry_paths);
     /**
      * Destructor.
      */

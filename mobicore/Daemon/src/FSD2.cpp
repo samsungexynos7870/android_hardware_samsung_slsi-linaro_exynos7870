@@ -46,6 +46,7 @@
 #include <assert.h>
 #include <pthread.h>
 #include <sys/stat.h>
+#include <dirent.h>
 
 #undef LOG_TAG
 #define LOG_TAG "TeeFilesystem"
@@ -258,6 +259,7 @@ public:
 };
 
 struct FileSystem::Impl {
+    const std::vector<std::string>& registry_paths;
     pthread_t thread;
 
     /*
@@ -279,7 +281,7 @@ struct FileSystem::Impl {
     Partition* partitions[16];
 
     // thread value does not matter, only initialised for code checkers
-    Impl(): thread(pthread_self()) {
+    Impl(const std::vector<std::string>& rp): registry_paths(rp), thread(pthread_self()) {
         ::memset(&dci, 0, sizeof(dci));
         sector_size = 0;
         for (int i = 0; i < 16; i++) {
@@ -291,7 +293,8 @@ struct FileSystem::Impl {
     const char* getCommandtypeString(uint32_t nInstructionID);
 };
 
-FileSystem::FileSystem(): pimpl_(new Impl) {}
+FileSystem::FileSystem(const std::vector<std::string>& registry_paths):
+    pimpl_(new Impl(registry_paths)) {}
 
 FileSystem::~FileSystem() {
     delete pimpl_;
@@ -305,15 +308,6 @@ void* FileSystem::run(void* arg) {
 
 int FileSystem::open() {
     const std::string storage_dir_name = getTbStoragePath();
-
-    // Create Tbase storage directory if necessary, parent is assumed to exist
-    if (::mkdir(storage_dir_name.c_str(), 0700) && (errno != EEXIST)) {
-        //LOG_ERRNO("creating storage folder");
-        // Do not return any error and block deamon boot flow or stop FSD thread.
-        // Just print a "warning/not critical error message".
-        // Directory could also be created by platform at initialization time.
-        // return -1;
-    }
 
     // Create partitions with default names
     for (int i = 0; i < 16; i++) {
@@ -355,6 +349,64 @@ void FileSystem::Impl::run() {
     sigemptyset(&sigmask);
     sigaddset(&sigmask, SIGUSR1);
     pthread_sigmask(SIG_UNBLOCK, &sigmask, (sigset_t*)0);
+
+    // The registry is created before we are started, in the 'right' place, so
+    // let's wait for it.
+    while (::access(registry_paths[0].c_str(), F_OK) < 0) {
+        LOG_D("Wait a bit longer for registry to appear");
+        sleep(1);
+    }
+
+    // Check whether we need to look for an Android pre-N registry
+    std::string marker_path = registry_paths[0] + "/.migration-done";
+    if (::access(marker_path.c_str(), F_OK) < 0) {
+        // Just assume that the marker is missing
+        std::string old_registry_dir("/data/app/mcRegistry");
+        // If we cannot access the old registry, we skip
+        if (::access(old_registry_dir.c_str(), F_OK) == 0) {
+            LOG_I("Old registry found, move contents");
+            DIR *dir = ::opendir(old_registry_dir.c_str());
+            if (!dir) {
+                LOG_ERRNO("(ignored) open old registry dir");
+            } else {
+                struct dirent *dirent;
+                while ((dirent = ::readdir(dir))) {
+                    if ((::strcmp(dirent->d_name, ".") == 0) || (::strcmp(dirent->d_name, "..") == 0)) {
+                        continue;
+                    }
+                    // Need to rename from the old registry name to the new
+                    std::string old_path(old_registry_dir + "/" + dirent->d_name);
+                    std::string new_path(registry_paths[0] + "/" + dirent->d_name);
+                    LOG_I("  %s -> %s", old_path.c_str(), new_path.c_str());
+                    if (::rename(old_path.c_str(), new_path.c_str())) {
+                        LOG_ERRNO("registry file rename");
+                        _LOG_E("*** ABORT TRUSTONIC DAEMON ***");
+                        sleep(1);
+                        exit(1);
+                    }
+                }
+                ::closedir(dir);
+            }
+        }
+        // All done, set marker
+        FILE* f_marker = ::fopen(marker_path.c_str(), "w");
+        if (f_marker) {
+            ::fclose(f_marker);
+        }
+    } else {
+        LOG_D("Registry marker found, no need to move any files");
+    }
+
+    const std::string storage_dir_name = getTbStoragePath();
+
+    // Create Tbase storage directory if necessary, parent is assumed to exist
+    if (::mkdir(storage_dir_name.c_str(), 0700) && (errno != EEXIST)) {
+        LOG_ERRNO("creating storage folder");
+        // Do not return any error and block deamon boot flow or stop FSD thread.
+        // Just print a "warning/not critical error message".
+        // Directory could also be created by platform at initialization time.
+        // return -1;
+    }
 
     mcResult_t mc_ret = mcOpenDevice(MC_DEVICE_ID_DEFAULT);
     if (MC_DRV_OK != mc_ret) {
