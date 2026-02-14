@@ -122,7 +122,7 @@ class MobiCoreDriverDaemon: public ConnectionHandler
 #endif
     Server  m_reg_server;
 public:
-    MobiCoreDriverDaemon();
+    MobiCoreDriverDaemon(const std::vector<std::string>& registry_paths);
     int init(const std::vector<std::string>& drivers);
     int run (void);
 };
