@@ -41,6 +41,36 @@ struct ExynosSensorInfoBase *createExynosCamera1SensorInfo(int camId)
     case SENSOR_NAME_S5K5E8:
         sensorInfo = new ExynosSensorS5K5E8();
         break;
+    case SENSOR_NAME_S5K3L2:
+        sensorInfo = new ExynosSensorS5K3L2();
+        break;
+    case SENSOR_NAME_S5K3P3:
+        sensorInfo = new ExynosSensorS5K3P3();
+        break;
+    case SENSOR_NAME_S5K5E3:
+        sensorInfo = new ExynosSensorS5K5E3();
+        break;
+    case SENSOR_NAME_SR544:
+        sensorInfo = new ExynosSensorSR544();
+        break;
+    case SENSOR_NAME_SR259:
+        sensorInfo = new ExynosSensorSR259();
+        break;
+    case SENSOR_NAME_S5K4H5YC:
+        sensorInfo = new ExynosSensorS5K4H5YC();
+        break;
+    case SENSOR_NAME_S5K3P8SP:
+        sensorInfo = new ExynosSensorS5K3P8SP();
+        break;
+    case SENSOR_NAME_IMX258:
+        sensorInfo = new ExynosSensorIMX258();
+        break;
+    case SENSOR_NAME_IMX219:
+        sensorInfo = new ExynosSensorIMX219();
+        break;
+    case SENSOR_NAME_S5K3M3:
+        sensorInfo = new ExynosSensorS5K3M3();
+        break;
     default:
         android_printAssert(NULL, LOG_TAG, "ASSERT(%s[%d]):Unknown sensor(%d), create default sensor, assert!!!!",
             __FUNCTION__, __LINE__, camId);
@@ -147,4 +177,146 @@ ExynosSensorS5K5E8::ExynosSensorS5K5E8()
         /* | EFFECT_BLACKBOARD */
         ;
 };
+
+ExynosSensorS5K3L2::ExynosSensorS5K3L2()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorS5K3P3::ExynosSensorS5K3P3()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorS5K5E3::ExynosSensorS5K5E3()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorSR544::ExynosSensorSR544()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorSR259::ExynosSensorSR259()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorS5K4H5YC::ExynosSensorS5K4H5YC()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorS5K3P8SP::ExynosSensorS5K3P8SP()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorIMX258::ExynosSensorIMX258()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorIMX219::ExynosSensorIMX219()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+ExynosSensorS5K3M3::ExynosSensorS5K3M3()
+{
+    effectList =
+          EFFECT_NONE
+        | EFFECT_MONO
+        | EFFECT_NEGATIVE
+        | EFFECT_SEPIA
+        | EFFECT_POSTERIZE
+        | EFFECT_COLD_VINTAGE
+        | EFFECT_BLUE
+        | EFFECT_RED_YELLOW
+        | EFFECT_AQUA;
+};
+
+
 }; /* namespace android */

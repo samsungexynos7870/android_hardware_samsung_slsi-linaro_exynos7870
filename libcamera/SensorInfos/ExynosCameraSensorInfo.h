@@ -56,5 +56,56 @@ public:
 //public:
 //    ExynosSensorS5K5E8();
 //};
+
+struct ExynosSensorS5K3L2 : public ExynosSensorS5K3L2Base {
+public:
+    ExynosSensorS5K3L2();
+};
+
+struct ExynosSensorS5K3P3 : public ExynosSensorS5K3P3Base {
+public:
+    ExynosSensorS5K3P3();
+};
+
+struct ExynosSensorS5K5E3 : public ExynosSensorS5K5E3Base {
+public:
+    ExynosSensorS5K5E3();
+};
+
+struct ExynosSensorSR544 : public ExynosSensorSR544Base {
+public:
+    ExynosSensorSR544();
+};
+
+struct ExynosSensorSR259 : public ExynosSensorSR259Base {
+public:
+    ExynosSensorSR259();
+};
+
+struct ExynosSensorS5K4H5YC : public ExynosSensorS5K4H5YCBase {
+public:
+    ExynosSensorS5K4H5YC();
+};
+
+struct ExynosSensorS5K3P8SP : public ExynosSensorS5K3P8SPBase {
+public:
+    ExynosSensorS5K3P8SP();
+};
+
+struct ExynosSensorIMX258 : public ExynosSensorIMX258Base {
+public:
+    ExynosSensorIMX258();
+};
+
+struct ExynosSensorIMX219 : public ExynosSensorIMX219Base {
+public:
+    ExynosSensorIMX219();
+};
+
+struct ExynosSensorS5K3M3 : public ExynosSensorS5K3M3Base {
+public:
+    ExynosSensorS5K3M3();
+};
+
 }; /* namespace android */
 #endif

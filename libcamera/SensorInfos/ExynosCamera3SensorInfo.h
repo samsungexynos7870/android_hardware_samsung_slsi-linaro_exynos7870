@@ -43,6 +43,47 @@ public:
     ExynosCamera3SensorS5K5E3();
 };
 
+
+struct ExynosCamera3SensorS5K3P3 : public ExynosCamera3SensorS5K3P3Base {
+public:
+    ExynosCamera3SensorS5K3P3(int cameraId);
+};
+
+struct ExynosCamera3SensorSR544 : public ExynosCamera3SensorSR544Base {
+public:
+    ExynosCamera3SensorSR544();
+};
+
+struct ExynosCamera3SensorSR259 : public ExynosCamera3SensorSR259Base {
+public:
+    ExynosCamera3SensorSR259();
+};
+
+struct ExynosCamera3SensorS5K4H5YC : public ExynosCamera3SensorS5K4H5YCBase {
+public:
+    ExynosCamera3SensorS5K4H5YC();
+};
+
+struct ExynosCamera3SensorS5K3P8SP : public ExynosCamera3SensorS5K3P8SPBase {
+public:
+    ExynosCamera3SensorS5K3P8SP(int cameraId);
+};
+
+struct ExynosCamera3SensorIMX258 : public ExynosCamera3SensorIMX258Base {
+public:
+    ExynosCamera3SensorIMX258();
+};
+
+struct ExynosCamera3SensorIMX219 : public ExynosCamera3SensorIMX219Base {
+public:
+    ExynosCamera3SensorIMX219();
+};
+
+struct ExynosCamera3SensorS5K3M3 : public ExynosCamera3SensorS5K3M3Base {
+public:
+    ExynosCamera3SensorS5K3M3(int cameraId);
+};
+
 /* Helpper functions */
 struct ExynosSensorInfoBase *createExynosCamera3SensorInfo(int sensorName);
 

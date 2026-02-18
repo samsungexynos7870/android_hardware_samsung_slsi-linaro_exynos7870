@@ -36,14 +36,35 @@ struct ExynosSensorInfoBase *createExynosCamera3SensorInfo(int camId)
     case SENSOR_NAME_S5K3L2:
         sensorInfo = new ExynosCamera3SensorS5K3L2();
         break;
-    case SENSOR_NAME_S5K3M2:
-        sensorInfo = new ExynosCamera3SensorS5K3M2();
-        break;
     case SENSOR_NAME_S5K5E2:
         sensorInfo = new ExynosCamera3SensorS5K5E2();
         break;
     case SENSOR_NAME_S5K5E3:
         sensorInfo = new ExynosCamera3SensorS5K5E3();
+        break;
+    case SENSOR_NAME_S5K3P3:
+        sensorInfo = new ExynosCamera3SensorS5K3P3(camId);
+        break;
+    case SENSOR_NAME_SR544:
+        sensorInfo = new ExynosCamera3SensorSR544();
+        break;
+    case SENSOR_NAME_SR259:
+        sensorInfo = new ExynosCamera3SensorSR259();
+        break;
+    case SENSOR_NAME_S5K4H5YC:
+        sensorInfo = new ExynosCamera3SensorS5K4H5YC();
+        break;
+    case SENSOR_NAME_S5K3P8SP:
+        sensorInfo = new ExynosCamera3SensorS5K3P8SP(camId);
+        break;
+    case SENSOR_NAME_IMX258:
+        sensorInfo = new ExynosCamera3SensorIMX258();
+        break;
+    case SENSOR_NAME_IMX219:
+        sensorInfo = new ExynosCamera3SensorIMX219();
+        break;
+    case SENSOR_NAME_S5K3M3:
+        sensorInfo = new ExynosCamera3SensorS5K3M3(camId);
         break;
     default:
         android_printAssert(NULL, LOG_TAG, "ASSERT(%s[%d]):Unknown sensor(%d), create default sensor, assert!!!!",
@@ -54,22 +75,50 @@ struct ExynosSensorInfoBase *createExynosCamera3SensorInfo(int camId)
     return sensorInfo;
 }
 
+// Existing concrete sensor classes
 ExynosCamera3SensorS5K3L2::ExynosCamera3SensorS5K3L2() : ExynosCamera3SensorS5K3L2Base()
 {
-    hyperFocalDistance = 1.0f / 3.6f;
-};
-
-ExynosCamera3SensorS5K3M2::ExynosCamera3SensorS5K3M2() : ExynosCamera3SensorS5K3M2Base()
-{
-    hyperFocalDistance = 1.0f / 3.6f;
-};
+    // hyperFocalDistance = 1.0f / 3.6f;
+}
 
 ExynosCamera3SensorS5K5E2::ExynosCamera3SensorS5K5E2() : ExynosCamera3SensorS5K5E2Base()
 {
-};
+}
 
 ExynosCamera3SensorS5K5E3::ExynosCamera3SensorS5K5E3() : ExynosCamera3SensorS5K5E3Base()
 {
-};
+}
 
-}; /* namespace android */
+ExynosCamera3SensorS5K3P3::ExynosCamera3SensorS5K3P3(int cameraId) : ExynosCamera3SensorS5K3P3Base(cameraId)
+{
+}
+
+ExynosCamera3SensorSR544::ExynosCamera3SensorSR544() : ExynosCamera3SensorSR544Base()
+{
+}
+
+ExynosCamera3SensorSR259::ExynosCamera3SensorSR259() : ExynosCamera3SensorSR259Base()
+{
+}
+
+ExynosCamera3SensorS5K4H5YC::ExynosCamera3SensorS5K4H5YC() : ExynosCamera3SensorS5K4H5YCBase()
+{
+}
+
+ExynosCamera3SensorS5K3P8SP::ExynosCamera3SensorS5K3P8SP(int cameraId) : ExynosCamera3SensorS5K3P8SPBase(cameraId)
+{
+}
+
+ExynosCamera3SensorIMX258::ExynosCamera3SensorIMX258() : ExynosCamera3SensorIMX258Base()
+{
+}
+
+ExynosCamera3SensorIMX219::ExynosCamera3SensorIMX219() : ExynosCamera3SensorIMX219Base()
+{
+}
+
+ExynosCamera3SensorS5K3M3::ExynosCamera3SensorS5K3M3(int cameraId) : ExynosCamera3SensorS5K3M3Base(cameraId)
+{
+}
+
+};
