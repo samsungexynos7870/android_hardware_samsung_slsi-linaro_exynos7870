@@ -17,9 +17,14 @@
 ifeq ($(TARGET_SOC), exynos7870)
 
 exynos7870_dirs += \
-	libcameraInterface \
 	libgatekeeper \
 	mobicore
+
+ifeq ($(TARGET_BOARD_CAMERA_DEVICE_VER), Q)
+    # do not include libcameraInterface
+else
+    exynos7870_dirs += libcameraInterface
+endif
 
 include $(call all-named-subdir-makefiles,$(exynos7870_dirs))
 
