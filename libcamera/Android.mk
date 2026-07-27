@@ -1,0 +1,153 @@
+# Copyright (C) 2015 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+LOCAL_PATH:= $(call my-dir)
+
+include $(CLEAR_VARS)
+
+ifeq ($(TARGET_SOC), exynos7870)
+    BOARD_CAMERA_GED_FEATURE := true
+else
+    BOARD_CAMERA_GED_FEATURE := false
+endif
+
+LOCAL_PROPRIETARY_MODULE := true
+LOCAL_PRELINK_MODULE := false
+
+# Fix: Removed libcamera_client (platform) and added libcamera_metadata_helper (vendor)
+LOCAL_SHARED_LIBRARIES:= libutils libcutils libbinder liblog libcamera_metadata_helper libhardware libui
+LOCAL_SHARED_LIBRARIES += libexynosutils libhwjpeg libexynosv4l2 libexynosgscaler libion libcsc
+LOCAL_SHARED_LIBRARIES += libexpat libc++ libpower libgui_vendor libsensorlistener
+
+# Support for Samsung specific features
+ifeq ($(BOARD_CAMERA_SAMSUNG_TN_FEATURE), true)
+    LOCAL_CFLAGS += -DSAMSUNG_TN_FEATURE
+    LOCAL_SHARED_LIBRARIES += libsecnativefeature libuniplugin
+endif
+
+# Sony specific StainKiller feature
+ifeq ($(BOARD_CAMERA_STAINKILLER_FEATURE), true)
+    LOCAL_CFLAGS += -DSTAINKILLER_FEATURE
+    LOCAL_SHARED_LIBRARIES += libstainkiller
+endif
+
+LOCAL_CFLAGS += -DGAIA_FW_BETA
+LOCAL_CFLAGS += -DMAIN_CAMERA_SENSOR_NAME=$(BOARD_BACK_CAMERA_SENSOR)
+LOCAL_CFLAGS += -DFRONT_CAMERA_SENSOR_NAME=$(BOARD_FRONT_CAMERA_SENSOR)
+LOCAL_CFLAGS += -DUSE_CAMERA_ESD_RESET
+LOCAL_CFLAGS += -DBACK_ROTATION=$(BOARD_BACK_CAMERA_ROTATION)
+LOCAL_CFLAGS += -DFRONT_ROTATION=$(BOARD_FRONT_CAMERA_ROTATION)
+
+ifeq ($(BOARD_CAMERA_GED_FEATURE), true)
+    LOCAL_CFLAGS += -DCAMERA_GED_FEATURE
+endif
+
+LOCAL_CFLAGS += -D$(shell echo $(TARGET_DEVICE) | tr a-z A-Z)_CAMERA
+
+LOCAL_CFLAGS += -Wno-macro-redefined
+LOCAL_CFLAGS += -Wno-implicit-fallthrough
+LOCAL_CFLAGS += -Wno-unused-variable
+LOCAL_CFLAGS += -Wno-unused-parameter
+LOCAL_CFLAGS += -Wno-overloaded-virtual
+LOCAL_CFLAGS += -Wno-format
+LOCAL_CFLAGS += -Wno-error=date-time
+
+
+LOCAL_C_INCLUDES += \
+    $(LOCAL_PATH)/../include \
+    $(LOCAL_PATH)/../libcamera \
+    $(LOCAL_PATH)/../libcamera/SensorInfos \
+    $(TOP)/system/media/camera/include \
+    $(TOP)/system/core/libion/include \
+    $(TOP)/system/core/libsync/include \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/kernel-$(TARGET_LINUX_KERNEL_VERSION)-headers/kernel-headers \
+    $(TOP)/system/memory/libion/kernel-headers \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/7870 \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/7870/hal1 \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870 \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/SensorInfos \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Pipes2 \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/MCPipes \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Activities \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Buffers \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Ged \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Sec \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/include \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos5/include \
+	$(TOP)/hardware/samsung_slsi-linaro/graphics/base/libion/include \
+    $(TOP)/hardware/samsung_slsi-linaro/$(TARGET_SOC)/include \
+    $(TOP)/hardware/samsung_slsi-linaro/$(TARGET_BOARD_PLATFORM)/include \
+    $(TOP)/hardware/samsung_slsi-linaro/$(TARGET_BOARD_PLATFORM)/libcamera \
+	$(TOP)/hardware/libhardware/include \
+    $(TOP)/hardware/libhardware_legacy/include/hardware_legacy \
+    $(TOP)/vendor/samsung/feature/CscFeature/libsecnativefeature \
+    $(TOP)/bionic \
+    $(TOP)/external/expat/lib \
+    $(TOP)/external/libcxx/include \
+    $(TOP)/frameworks/av/include \
+	$(TOP)/frameworks/av/camera/include \
+    $(TOP)/frameworks/native/include \
+    $(TOP)/hardware/camera/UniPlugin/include \
+    $(TOP)/frameworks/native/headers/media_plugin/media/openmax
+
+# Header libraries (Crucial for finding hardware/exynos/ion.h)
+LOCAL_HEADER_LIBRARIES += libcutils_headers libsystem_headers libhardware_headers libexynos_headers
+
+LOCAL_SRC_FILES:= \
+    ../../exynos/libcamera/common_v3_7870/ExynosCameraFrame.cpp \
+    ../../exynos/libcamera/common_v3_7870/ExynosCameraMemory.cpp \
+    ../../exynos/libcamera/common_v3_7870/ExynosCameraFrameManager.cpp \
+    ../../exynos/libcamera/common_v3_7870/ExynosCameraUtils.cpp \
+    ../../exynos/libcamera/common_v3_7870/ExynosCameraNode.cpp \
+    ../../exynos/libcamera/common_v3_7870/ExynosCameraNodeJpegHAL.cpp \
+    ../../exynos/libcamera/common_v3_7870/ExynosCameraFrameSelector.cpp \
+    ../../exynos/libcamera/common_v3_7870/ExynosCamera1MetadataConverter.cpp \
+    ../../exynos/libcamera/common_v3_7870/SensorInfos/ExynosCameraSensorInfoBase.cpp \
+    ../../exynos/libcamera/common_v3_7870/MCPipes/ExynosCameraMCPipe.cpp \
+    ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipe.cpp \
+    ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipeFlite.cpp \
+    ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipeVRA.cpp \
+    ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipeGSC.cpp \
+    ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipeJpeg.cpp \
+    ../../exynos/libcamera/common_v3_7870/Buffers/ExynosCameraBufferManager.cpp \
+    ../../exynos/libcamera/common_v3_7870/Activities/ExynosCameraActivityBase.cpp \
+    ../../exynos/libcamera/common_v3_7870/Activities/ExynosCameraActivityAutofocus.cpp \
+    ../../exynos/libcamera/common_v3_7870/Activities/ExynosCameraActivityFlash.cpp \
+    ../../exynos/libcamera/common_v3_7870/Activities/ExynosCameraActivitySpecialCapture.cpp \
+    ../../exynos/libcamera/common_v3_7870/Activities/ExynosCameraActivityUCTL.cpp \
+    ../../exynos/libcamera/common_v3_7870/Sec/ExynosCameraActivityAutofocusVendor.cpp \
+    ../../exynos/libcamera/common_v3_7870/Sec/ExynosCameraActivityFlashVendor.cpp \
+    ../../exynos/libcamera/common_v3_7870/Sec/ExynosCameraFrameSelectorVendor.cpp \
+    ../../exynos/libcamera/7870/ExynosCameraUtilsModule.cpp \
+    ../../exynos/libcamera/7870/hal1/ExynosCameraSizeControl.cpp \
+    ../../exynos/libcamera/7870/ExynosCameraActivityControl.cpp\
+    ../../exynos/libcamera/7870/ExynosCameraScalableSensor.cpp \
+    ../../exynos/libcamera/7870/hal1/ExynosCamera.cpp \
+    ../../exynos/libcamera/7870/hal1/ExynosCamera1Parameters.cpp \
+    ../../exynos/libcamera/7870/hal1/ExynosCameraFrameFactory.cpp \
+    ../../exynos/libcamera/7870/hal1/ExynosCameraFrameFactoryPreview.cpp \
+    ../../exynos/libcamera/7870/hal1/ExynosCameraFrameFactoryVision.cpp \
+    ../../exynos/libcamera/7870/hal1/ExynosCameraFrameReprocessingFactory.cpp \
+    ../../exynos/libcamera/7870/hal1/ExynosCameraFrameReprocessingFactoryRemosaic.cpp \
+    ../../exynos/libcamera/7870/hal1/Sec/ExynosCameraVendor.cpp \
+    ../../exynos/libcamera/7870/hal1/Sec/ExynosCamera1ParametersVendor.cpp
+
+LOCAL_SRC_FILES += ../libcamera/SensorInfos/ExynosCameraSensorInfo.cpp
+
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_TARGET_ARCH:= arm
+LOCAL_MODULE := libexynoscamera
+
+include $(TOP)/hardware/samsung_slsi-linaro/exynos/BoardConfigCFlags.mk
+include $(BUILD_SHARED_LIBRARY)

@@ -25,8 +25,49 @@
 #ifndef EXYNOS_CAMERA_CONFIG_H__
 #define EXYNOS_CAMERA_CONFIG_H__
 
+
+#include <camera/CameraParameters.h>
 #include "ExynosCameraCommonEnum.h"
 #include "ExynosCameraCommonDefine.h"
+
+/* Workaround for missing Samsung effects/ISO in AOSP CameraParameters */
+namespace android {
+class CameraParametersSec : public CameraParameters {
+public:
+    static inline const char PIXEL_FORMAT_YUV420SP_NV21[] = "nv21";
+    static inline const char EFFECT_CARTOONIZE[] = "cartoonize";
+    static inline const char EFFECT_POINT_RED_YELLOW[] = "point-red-yellow";
+    static inline const char EFFECT_POINT_GREEN[] = "point-green";
+    static inline const char EFFECT_POINT_BLUE[] = "point-blue";
+    static inline const char EFFECT_VINTAGE_COLD[] = "vintage-cold";
+    static inline const char EFFECT_VINTAGE_WARM[] = "vintage-warm";
+    static inline const char EFFECT_WASHED[] = "washed";
+    static inline const char ISO_AUTO[] = "auto";
+    static inline const char ISO_NIGHT[] = "night";
+    static inline const char ISO_SPORTS[] = "sports";
+    static inline const char ISO_6400[] = "6400";
+    static inline const char ISO_3200[] = "3200";
+    static inline const char ISO_1600[] = "1600";
+    static inline const char ISO_800[] = "800";
+    static inline const char ISO_400[] = "400";
+    static inline const char ISO_200[] = "200";
+    static inline const char ISO_100[] = "100";
+    static inline const char ISO_80[] = "80";
+    static inline const char ISO_50[] = "50";
+    static inline const char KEY_SUPPORTED_METERING_MODE[] = "metering-values";
+    static inline const char METERING_CENTER[] = "center";
+    static inline const char METERING_MATRIX[] = "matrix";
+    static inline const char METERING_SPOT[] = "spot";
+    static inline const char METERING_OFF[] = "off";
+    static inline const char KEY_DYNAMIC_RANGE_CONTROL[] = "dynamic-range-control";
+    static inline const char KEY_SUPPORTED_PHASE_AF[] = "phase-af-values";
+    static inline const char KEY_PHASE_AF[] = "phase-af";
+    static inline const char KEY_SUPPORTED_RT_HDR[] = "rt-hdr-values";
+    static inline const char KEY_RT_HDR[] = "rt-hdr";
+};
+}
+#define CameraParameters CameraParametersSec
+
 
 /* It will be replaced by TN */
 #ifdef CAMERA_GED_FEATURE
@@ -175,6 +216,8 @@ enum {
 #define USE_ADAPTIVE_CSC_RECORDING      (true)
 #endif
 
+#define USE_ADAPTIVE_CSC_RECORDING_FRONT (false)
+
 #define SUPPORT_BACK_HW_VDIS            (false)
 #define SUPPORT_FRONT_HW_VDIS           (false)
 
@@ -275,6 +318,8 @@ enum REPROCESSING_BAYER_MODE {
 
 /* back */
 #define MAIN_CAMERA_FLITE_NUM                       FIMC_IS_VIDEO_SS0_NUM
+#define MAIN_1_CAMERA_FLITE_NUM                     FIMC_IS_VIDEO_SS2_NUM
+#define MAIN_CAMERA_DEPTH_VC_NUM                    FIMC_IS_VIDEO_SS0VC1_NUM
 #define MAIN_CAMERA_HAS_OWN_SCC     (false)
 
 #define MAIN_CAMERA_SINGLE_FLITE_3AA_OTF (true)
@@ -297,6 +342,7 @@ enum REPROCESSING_BAYER_MODE {
 
 /* front */
 #define FRONT_CAMERA_FLITE_NUM                       FIMC_IS_VIDEO_SS1_NUM
+#define FRONT_1_CAMERA_FLITE_NUM                     FIMC_IS_VIDEO_SS3_NUM
 #define FRONT_CAMERA_HAS_OWN_SCC    (false)
 
 #define FRONT_CAMERA_SINGLE_FLITE_3AA_OTF (true)
@@ -550,19 +596,15 @@ enum REPROCESSING_BAYER_MODE {
 #define PERFRAME_BACK_MCSC0_POS         (0)
 #define PERFRAME_BACK_MCSC1_POS         (0)
 #define PERFRAME_BACK_MCSC2_POS         (0)
+#define PERFRAME_BACK_VC0_POS           (0)
 
-/*
-#define PERFRAME_FRONT_3AC_POS          (1)
-#define PERFRAME_FRONT_3AP_POS          (0)
-#define PERFRAME_FRONT_SCC_POS          (0)
-#define PERFRAME_FRONT_SCP_POS          (1)
-*/
 #define PERFRAME_FRONT_3AC_POS          (PERFRAME_BACK_3AC_POS)
 #define PERFRAME_FRONT_3AP_POS          (PERFRAME_BACK_3AP_POS)
 #define PERFRAME_FRONT_ISPC_POS         (PERFRAME_BACK_ISPC_POS)
 #define PERFRAME_FRONT_ISPP_POS         (PERFRAME_BACK_ISPP_POS)
 #define PERFRAME_FRONT_SCC_POS          (PERFRAME_BACK_SCC_POS)
 #define PERFRAME_FRONT_SCP_POS          (PERFRAME_BACK_SCP_POS)
+#define PERFRAME_FRONT_VC0_POS          (0)
 
 #define PERFRAME_REPROCESSING_3AP_POS   (0)
 #define PERFRAME_REPROCESSING_3AC_POS   (1)
@@ -570,6 +612,7 @@ enum REPROCESSING_BAYER_MODE {
 #define PERFRAME_REPROCESSING_ISPC_POS    (0)
 #define PERFRAME_REPROCESSING_ISPP_POS    (0)
 #define PERFRAME_REPROCESSING_MCSC0_POS   (PERFRAME_REPROCESSING_SCC_POS)
+#define PERFRAME_REPROCESSING_MCSC1_POS   (0)
 #define PERFRAME_REPROCESSING_MCSC2_POS   (0)
 #define PERFRAME_REPROCESSING_MCSC3_POS   (0)
 #define PERFRAME_REPROCESSING_MCSC4_POS   (0)
@@ -643,6 +686,12 @@ enum pipeline {
     PIPE_MCSC3,
     PIPE_MCSC4,
     PIPE_VRA,
+    PIPE_TPU,
+    PIPE_TPU1,
+    PIPE_VC0,
+    PIPE_VC1,
+    PIPE_VC2,
+    PIPE_VC3,
     PIPE_3AA_ISP,
     PIPE_POST_3AA_ISP,
     PIPE_SCC,
@@ -688,6 +737,11 @@ enum pipeline {
     PIPE_MCSC2_REPROCESSING,
     PIPE_MCSC3_REPROCESSING,
     PIPE_MCSC4_REPROCESSING,
+    PIPE_TPU_REPROCESSING,
+    PIPE_VC0_REPROCESSING,
+    PIPE_VC1_REPROCESSING,
+    PIPE_VC2_REPROCESSING,
+    PIPE_VC3_REPROCESSING,
     PIPE_SCC_REPROCESSING,
     PIPE_SCP_REPROCESSING,
     PIPE_GSC_REPROCESSING,
@@ -717,13 +771,29 @@ enum fimc_is_video_dev_num {
     FIMC_IS_VIDEO_31C_NUM,
     FIMC_IS_VIDEO_31P_NUM,
     FIMC_IS_VIDEO_I0S_NUM = 130,
+    FIMC_IS_VIDEO_SS0VC0_NUM,
+    FIMC_IS_VIDEO_SS0VC1_NUM,
+    FIMC_IS_VIDEO_SS0VC2_NUM,
+    FIMC_IS_VIDEO_SS0VC3_NUM,
     FIMC_IS_VIDEO_I0C_NUM,
     FIMC_IS_VIDEO_I0P_NUM,
     FIMC_IS_VIDEO_I1S_NUM = 140,
+    FIMC_IS_VIDEO_SS1VC0_NUM,
+    FIMC_IS_VIDEO_SS1VC1_NUM,
+    FIMC_IS_VIDEO_SS1VC2_NUM,
+    FIMC_IS_VIDEO_SS1VC3_NUM,
     FIMC_IS_VIDEO_I1C_NUM,
     FIMC_IS_VIDEO_I1P_NUM,
-    FIMC_IS_VIDEO_TPU_NUM = 150,
-    FIMC_IS_VIDEO_SCC_NUM,
+    FIMC_IS_VIDEO_SS2VC0_NUM,
+    FIMC_IS_VIDEO_SS2VC1_NUM,
+    FIMC_IS_VIDEO_SS2VC2_NUM,
+    FIMC_IS_VIDEO_SS2VC3_NUM,
+    FIMC_IS_VIDEO_TPU_NUM = 151,
+    FIMC_IS_VIDEO_SS3VC0_NUM = 152,
+    FIMC_IS_VIDEO_SS3VC1_NUM,
+    FIMC_IS_VIDEO_SS3VC2_NUM,
+    FIMC_IS_VIDEO_SS3VC3_NUM,
+    FIMC_IS_VIDEO_SCC_NUM = 156,
     FIMC_IS_VIDEO_SCP_NUM,
     FIMC_IS_VIDEO_M0S_NUM = 160,
     FIMC_IS_VIDEO_M1S_NUM,
@@ -733,6 +803,7 @@ enum fimc_is_video_dev_num {
     FIMC_IS_VIDEO_M3P_NUM,
     FIMC_IS_VIDEO_M4P_NUM,
     FIMC_IS_VIDEO_VRA_NUM = 180,
+    FIMC_IS_VIDEO_D1C_NUM = 191,
     FIMC_IS_VIDEO_HWFC_JPEG_NUM = 200,
     FIMC_IS_VIDEO_HWFC_THUMB_NUM = 201,
     FIMC_IS_VIDEO_MAX_NUM
