@@ -117,7 +117,6 @@ LOCAL_SHARED_LIBRARIES += android.hardware.graphics.allocator@2.0
 LOCAL_SHARED_LIBRARIES += android.hardware.graphics.mapper@2.0
 LOCAL_SHARED_LIBRARIES += libGrallocWrapper
 LOCAL_SHARED_LIBRARIES += libgui_vendor
-LOCAL_SHARED_LIBRARIES += libexynoscamera3
 
 LOCAL_HEADER_LIBRARIES += \
     libnativebase_headers \

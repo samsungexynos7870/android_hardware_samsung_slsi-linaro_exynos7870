@@ -17,6 +17,8 @@
 ifeq ($(TARGET_SOC), exynos7870)
 
 exynos7870_dirs += \
+    libcamera \
+    libcamera3 \
 	libgatekeeper \
 	mobicore
 
