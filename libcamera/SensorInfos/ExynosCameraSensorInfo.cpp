@@ -38,9 +38,6 @@ struct ExynosSensorInfoBase *createExynosCamera1SensorInfo(int camId)
     case SENSOR_NAME_S5K3M2:
         sensorInfo = new ExynosSensorS5K3M2();
         break;
-    case SENSOR_NAME_S5K5E8:
-        sensorInfo = new ExynosSensorS5K5E8();
-        break;
     case SENSOR_NAME_S5K3L2:
         sensorInfo = new ExynosSensorS5K3L2();
         break;
@@ -143,24 +140,6 @@ ExynosSensorS5K3M2::ExynosSensorS5K3M2()
 };
 
 ExynosSensorS5K5E2::ExynosSensorS5K5E2()
-{
-    effectList =
-          EFFECT_NONE
-        | EFFECT_MONO
-        | EFFECT_NEGATIVE
-        /* | EFFECT_SOLARIZE */
-        | EFFECT_SEPIA
-        | EFFECT_POSTERIZE
-        | EFFECT_COLD_VINTAGE
-        | EFFECT_BLUE
-        | EFFECT_RED_YELLOW
-        | EFFECT_AQUA
-        /* | EFFECT_WHITEBOARD */
-        /* | EFFECT_BLACKBOARD */
-        ;
-};
-
-ExynosSensorS5K5E8::ExynosSensorS5K5E8()
 {
     effectList =
           EFFECT_NONE
