@@ -22,6 +22,13 @@ exynos7870_dirs += \
 	libgatekeeper \
 	mobicore
 
+# Allow devices to choose which Exynos camera library is built from
+# source.  some devices build HAL1 libexynoscamera from source and keeps
+# stock/prebuilt HAL3 libexynoscamera3.
+ifeq ($(BOARD_CAMERA_SKIP_HAL3_SOURCE), true)
+    exynos7870_dirs := $(filter-out libcamera3,$(exynos7870_dirs))
+endif
+
 ifeq ($(TARGET_BOARD_CAMERA_DEVICE_VER), Q)
     # do not include libcameraInterface
 else

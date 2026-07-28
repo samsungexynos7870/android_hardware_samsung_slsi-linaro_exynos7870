@@ -34,6 +34,10 @@
 namespace android {
 class CameraParametersSec : public CameraParameters {
 public:
+    /* Preserve all AOSP CameraParameters construction forms, including
+     * CameraParameters(const String8 &), while adding Samsung constants. */
+    using CameraParameters::CameraParameters;
+
     static inline const char PIXEL_FORMAT_YUV420SP_NV21[] = "nv21";
     static inline const char EFFECT_CARTOONIZE[] = "cartoonize";
     static inline const char EFFECT_POINT_RED_YELLOW[] = "point-red-yellow";
@@ -76,6 +80,13 @@ public:
 #endif /* CAMERA_GED_FEATURE */
 
 #define SMDK7870
+
+/* Android 11 provides the legacy libion API already linked by this HAL.
+ * Prefer it over private exynos_ion symbols unavailable in this BSP. */
+// This is now set via Android.mk
+// #ifndef USE_LIB_ION_LEGACY
+// #define USE_LIB_ION_LEGACY
+// #endif
 
 #ifndef USE_VENDOR_SPECIFIC_CONFIG_HEADER
 
@@ -120,6 +131,12 @@ public:
 #define LCD_SIZE_2560_1440              (4)
 #define CAMERA_LCD_SIZE                 LCD_SIZE_1280_720
 
+/* j5y17lte, a3y17lte, a6lte and more... panorama preview sizes for 720p display. */
+#define PANORAMA_PREVIEW_WIDTH_RATIO_4_3    (960)
+#define PANORAMA_PREVIEW_HEIGHT_RATIO_4_3   (720)
+#define PANORAMA_PREVIEW_WIDTH_RATIO_16_9   (1280)
+#define PANORAMA_PREVIEW_HEIGHT_RATIO_16_9  (720)
+
 /* #define LIMIT_SCP_SIZE_UNTIL_FHD_ON_CAPTURE */   /* Even if LCD is bigger than FHD, limit scp size until FHD on capture preview  */
 #define LIMIT_SCP_SIZE_UNTIL_FHD_ON_RECORDING /* Even if LCD is bigger than FHD, limit scp size until FHD on recording preview*/
 
@@ -128,12 +145,22 @@ public:
 #define CAMERA_MCSC_ALIGN               (2)
 #define CAMERA_MAGIC_ALIGN              (16)
 #define CAMERA_16PX_ALIGN               (16)
+
+/* TPU/DIS buffers use 64-byte line alignment in the v3 camera sources. */
+#define CAMERA_TPU_CHUNK_ALIGN_W        (64)
+#define CAMERA_TPU_CHUNK_ALIGN_H        (4)
+
+/* Shared Sec HAL constants missing from the public product configuration. */
+#define MFC_ALIGN                       (CAMERA_16PX_ALIGN)
+#define MULTI_BUFFER_BASE_FPS           (30)
+
 /* This value for GSC alignment refer to "csc.h" */
 #define GSCALER_IMG_ALIGN               (16)
 
 #define SCALER_MAX_SCALE_UP_RATIO       (8)
 
 #define INITIAL_SKIP_FRAME              (8)
+#define INITIAL_SKIP_FD_FRAME           (INITIAL_SKIP_FRAME)
 #define VISION_SKIP_FRAME               (4)
 #define EFFECT_SKIP_FRAME               (1)
 #define SMART_STAY_SKIP_COMPENSATION    (1)
@@ -163,6 +190,8 @@ public:
 #endif
 
 #define RESERVED_BUFFER_COUNT_MAX       (0)
+/* Most exynos7870 devices like j5y17lte have no secure/iris camera; keep the compiled dead path at zero. */
+#define RESERVED_NUM_SECURE_BUFFERS     (0)
 
 /* #define USE_BNS_PREVIEW */ /* use BNS on capture scenario. this change LUT size */
 
@@ -209,6 +238,10 @@ enum {
 #define FRAME_SKIP_COUNT_RECORDING      (1)
 #define FRAME_SKIP_COUNT_PREVIEW        (0)
 #define FRAME_SKIP_COUNT_PREVIEW_FRONT  (3)
+
+/* Start conservatively: select one bayer frame in QuickShot mode.
+ * Increase only after validating capture latency and stale-frame behavior. */
+#define FRAME_SKIP_COUNT_QUICK_SHOT     (1)
 
 #ifdef CAMERA_GED_FEATURE
 #define USE_ADAPTIVE_CSC_RECORDING      (true)
@@ -343,7 +376,12 @@ enum REPROCESSING_BAYER_MODE {
 /* front */
 #define FRONT_CAMERA_FLITE_NUM                       FIMC_IS_VIDEO_SS1_NUM
 #define FRONT_1_CAMERA_FLITE_NUM                     FIMC_IS_VIDEO_SS3_NUM
+#define FRONT_CAMERA_DEPTH_VC_NUM                    FIMC_IS_VIDEO_SS1VC1_NUM
 #define FRONT_CAMERA_HAS_OWN_SCC    (false)
+
+/* Vision/secure paths are compiled even on products that do not expose them. */
+#define VISION_CAMERA_FLITE_NUM                      FIMC_IS_VIDEO_SS1_NUM
+#define SECURE_CAMERA_FLITE_NUM                      FIMC_IS_VIDEO_SS3_NUM
 
 #define FRONT_CAMERA_SINGLE_FLITE_3AA_OTF (true)
 #define FRONT_CAMERA_DUAL_FLITE_3AA_OTF   (false)
@@ -377,6 +415,11 @@ enum REPROCESSING_BAYER_MODE {
 #define SENSOR_INSTANT_SHIFT        (16)
 #define SENSOR_SSTREAM_SHIFT        (0)
 
+#define BINNING_SETFILE_INDEX        ISS_SUB_SCENARIO_FHD_240FPS
+
+/* Sensor scenario occupies the upper six bits in the v3 HAL sensor ID. */
+#define INPUT_SENSOR_MASK   0xFC000000
+#define INPUT_SENSOR_SHIFT   26
 #define INPUT_STREAM_MASK   0xFF000000 /* stream type : 1 (reprocessing) */
 #define INPUT_STREAM_SHIFT   24
 #define INPUT_MODULE_MASK   0x00FF0000 /* module id : unique sensor id */
@@ -432,6 +475,8 @@ enum REPROCESSING_BAYER_MODE {
 #define NUM_PREVIEW_BUFFERS_MARGIN      (1)
 #endif
 
+#define NUM_THUMBNAIL_POSTVIEW_BUFFERS  (NUM_PICTURE_BUFFERS)
+
 #ifdef CAMERA_GED_FEATURE
 #define RESERVED_NUM_BAYER_BUFFERS      (NUM_BAYER_BUFFERS)
 #define RESERVED_NUM_ISP_BUFFERS        (0)
@@ -444,6 +489,16 @@ enum REPROCESSING_BAYER_MODE {
 #define RESERVED_NUM_ISP_BUFFERS        (3)
 #endif /* DEBUG_RAWDUMP */
 #endif
+
+/* Optional reserved-memory pools not provided by the public GED config. */
+#define NUM_HIDING_BUFFER_COUNT                 (0)
+#define RESERVED_NUM_ISP_BUFFERS_ON_UHD         (0)
+#define FRONT_RESERVED_NUM_ISP_BUFFERS_ON_UHD   (0)
+#define RESERVED_NUM_JPEG_BUFFERS               (0)
+#define FRONT_RESERVED_NUM_JPEG_BUFFERS         (0)
+#define RESERVED_NUM_JPEG_BUFFERS_ON_UHD        (0)
+#define FRONT_RESERVED_NUM_JPEG_BUFFERS_ON_UHD  (0)
+#define RESERVED_NUM_POST_PIC_BUFFERS           (0)
 
 #define PIPE_FLITE_PREPARE_COUNT            (3)
 #define PIPE_3AC_PREPARE_COUNT              (3)
@@ -531,6 +586,11 @@ enum REPROCESSING_BAYER_MODE {
 #define SCC_OUTPUT_COLOR_FMT            (V4L2_PIX_FMT_YUYV)
 #define JPEG_INPUT_COLOR_FMT            (SCC_OUTPUT_COLOR_FMT)
 #define CAMERA_BAYER_FORMAT             (V4L2_PIX_FMT_SBGGR12)
+/* Public GED config uses one 12-bit Bayer format throughout the 7870 chain. */
+#define CAMERA_FLITE_BAYER_FORMAT       (CAMERA_BAYER_FORMAT)
+#define CAMERA_3AC_BAYER_FORMAT         (CAMERA_BAYER_FORMAT)
+#define CAMERA_3AP_BAYER_FORMAT         (CAMERA_BAYER_FORMAT)
+#define CAMERA_3AP_REPROCESSING_BAYER_FORMAT (CAMERA_BAYER_FORMAT)
 #define CAMERA_DUMP_BAYER_FORMAT        (V4L2_PIX_FMT_SBGGR16)
 
 #define ERROR_POLLING_DETECTED          (-1001)
@@ -572,7 +632,9 @@ enum REPROCESSING_BAYER_MODE {
 #define PERFRAME_INFO_3AA                       PERFRAME_INFO_INDEX_0
 #define PERFRAME_INFO_ISP                       PERFRAME_INFO_INDEX_1
 #define PERFRAME_INFO_DIS                       PERFRAME_INFO_INDEX_2
+#define PERFRAME_INFO_TPU                       PERFRAME_INFO_INDEX_2
 #define PERFRAME_INFO_MCSC                      PERFRAME_INFO_INDEX_3
+#define PERFRAME_INFO_FLITE                     PERFRAME_INFO_INDEX_4
 #define PERFRAME_INFO_VRA                       PERFRAME_INFO_INDEX_4
 
 #define PERFRAME_INFO_PURE_REPROCESSING_3AA     PERFRAME_INFO_INDEX_0
@@ -583,6 +645,10 @@ enum REPROCESSING_BAYER_MODE {
 #define PERFRAME_INFO_DIRTY_REPROCESSING_MCSC   PERFRAME_INFO_INDEX_1
 
 #define PERFRAME_INFO_YUV_REPROCESSING_MCSC     PERFRAME_INFO_INDEX_0
+/* TPU1/ODC is not present on Exynos 7870, but the shared HAL1 source
+ * still compiles its disabled reprocessing path. Keep its metadata slot
+ * separate from the active 3AA/ISP/MCSC groups. */
+#define PERFRAME_INFO_REPROCESSING_TPU          PERFRAME_INFO_INDEX_3
 
 #define PERFRAME_3AA_POS                        PER_FRAME_GROUP_0
 #define PERFRAME_ISP_POS                        PER_FRAME_GROUP_1
@@ -631,6 +697,11 @@ enum REPROCESSING_BAYER_MODE {
 #define VISION_WIDTH                     (320)
 #define VISION_HEIGHT                    (180)
 
+/* The secure/iris path is not exposed by j5y17lte, but the shared vision
+ * factory references these constants unconditionally. */
+#define SECURE_CAMERA_WIDTH              (2400)
+#define SECURE_CAMERA_HEIGHT             (2400)
+
 /* callback state */
 #define CALLBACK_STATE_PREVIEW_META     (1)
 #define CALLBACK_STATE_PREVIEW_FRAME    (2)
@@ -643,6 +714,7 @@ enum REPROCESSING_BAYER_MODE {
 #define BEST_FACE_DURATION          400000  /* 2.5fps */
 #define ERASER_DURATION             800000  /* 1.25fps */
 #define NORMAL_BURST_DURATION       90000   /* about 11fps */
+#define PANORAMA_SHOT_DURATION      (NORMAL_BURST_DURATION)
 #define SELFIE_ALARM_DURATION       330000  /* about 3fps */
 
 #define USE_MEM2MEM_GSC
@@ -671,6 +743,10 @@ enum YUV_RANGE {
 
 enum pipeline {
     PIPE_FLITE                  = 0,
+    PIPE_VC0,
+    PIPE_VC1, /* depth map */
+    PIPE_VC2,
+    PIPE_VC3,
     PIPE_3AA,
     PIPE_3AC,
     PIPE_3AP,
@@ -678,6 +754,8 @@ enum pipeline {
     PIPE_ISPC,
     PIPE_ISPP,
     PIPE_DIS,
+    PIPE_TPU = PIPE_DIS,
+    PIPE_TPUP,
     PIPE_MCSC,
     PIPE_SCP,
     PIPE_MCSC0 = PIPE_SCP,
@@ -686,12 +764,6 @@ enum pipeline {
     PIPE_MCSC3,
     PIPE_MCSC4,
     PIPE_VRA,
-    PIPE_TPU,
-    PIPE_TPU1,
-    PIPE_VC0,
-    PIPE_VC1,
-    PIPE_VC2,
-    PIPE_VC3,
     PIPE_3AA_ISP,
     PIPE_POST_3AA_ISP,
     PIPE_SCC,
@@ -700,12 +772,13 @@ enum pipeline {
     PIPE_GSC_VRA,
     PIPE_GSC_PICTURE,
     PIPE_JPEG,
+
+    /* Disabled ODC path retained by the shared Exynos 7885 HAL1 source. */
+    PIPE_TPU1,
+    PIPE_TPU1C,
     MAX_PIPE_NUM,
 
-    /*
-     * PIPE_XXX_FRONT are deprecated define.
-     * Don't use this. (just let for common code compile)
-     */
+    /* Deprecated front-camera IDs kept for common-source compatibility. */
     PIPE_FLITE_FRONT = 100,
     PIPE_3AA_FRONT,
     PIPE_3AC_FRONT,
@@ -725,28 +798,27 @@ enum pipeline {
     MAX_PIPE_NUM_FRONT,
 
     PIPE_FLITE_REPROCESSING     = 200,
+    PIPE_VC0_REPROCESSING,
     PIPE_3AA_REPROCESSING,
     PIPE_3AC_REPROCESSING,
     PIPE_3AP_REPROCESSING,
     PIPE_ISP_REPROCESSING,
     PIPE_ISPC_REPROCESSING,
     PIPE_ISPP_REPROCESSING,
+    PIPE_TPU_REPROCESSING,
+    PIPE_TPUP_REPROCESSING,
     PIPE_MCSC_REPROCESSING,
     PIPE_MCSC0_REPROCESSING,
     PIPE_MCSC1_REPROCESSING,
     PIPE_MCSC2_REPROCESSING,
     PIPE_MCSC3_REPROCESSING,
     PIPE_MCSC4_REPROCESSING,
-    PIPE_TPU_REPROCESSING,
-    PIPE_VC0_REPROCESSING,
-    PIPE_VC1_REPROCESSING,
-    PIPE_VC2_REPROCESSING,
-    PIPE_VC3_REPROCESSING,
     PIPE_SCC_REPROCESSING,
     PIPE_SCP_REPROCESSING,
     PIPE_GSC_REPROCESSING,
     PIPE_GSC_REPROCESSING2,
     PIPE_GSC_REPROCESSING3,
+    PIPE_GSC_REPROCESSING4,
 #ifdef UVS
     PIPE_UVS_REPROCESSING,
 #endif
@@ -758,12 +830,20 @@ enum pipeline {
     MAX_PIPE_NUM_REPROCESSING
 };
 
+/*
+ * The HAL stores /dev/videoN as 100 + the FIMC-IS driver's video ID.
+ * Keep this table in lockstep with fimc-is2/fimc-is-video.h from the
+ * Exynos 7870 kernel (SSxVCy starts at driver ID 110, hence video210).
+ */
 enum fimc_is_video_dev_num {
     FIMC_IS_VIDEO_BAS_NUM = 100,
     FIMC_IS_VIDEO_SS0_NUM = 101,
     FIMC_IS_VIDEO_SS1_NUM,
     FIMC_IS_VIDEO_SS2_NUM,
     FIMC_IS_VIDEO_SS3_NUM,
+    FIMC_IS_VIDEO_SS4_NUM,
+    FIMC_IS_VIDEO_SS5_NUM,
+    FIMC_IS_VIDEO_PRE_NUM = 109,
     FIMC_IS_VIDEO_30S_NUM = 110,
     FIMC_IS_VIDEO_30C_NUM,
     FIMC_IS_VIDEO_30P_NUM,
@@ -771,29 +851,13 @@ enum fimc_is_video_dev_num {
     FIMC_IS_VIDEO_31C_NUM,
     FIMC_IS_VIDEO_31P_NUM,
     FIMC_IS_VIDEO_I0S_NUM = 130,
-    FIMC_IS_VIDEO_SS0VC0_NUM,
-    FIMC_IS_VIDEO_SS0VC1_NUM,
-    FIMC_IS_VIDEO_SS0VC2_NUM,
-    FIMC_IS_VIDEO_SS0VC3_NUM,
     FIMC_IS_VIDEO_I0C_NUM,
     FIMC_IS_VIDEO_I0P_NUM,
     FIMC_IS_VIDEO_I1S_NUM = 140,
-    FIMC_IS_VIDEO_SS1VC0_NUM,
-    FIMC_IS_VIDEO_SS1VC1_NUM,
-    FIMC_IS_VIDEO_SS1VC2_NUM,
-    FIMC_IS_VIDEO_SS1VC3_NUM,
     FIMC_IS_VIDEO_I1C_NUM,
     FIMC_IS_VIDEO_I1P_NUM,
-    FIMC_IS_VIDEO_SS2VC0_NUM,
-    FIMC_IS_VIDEO_SS2VC1_NUM,
-    FIMC_IS_VIDEO_SS2VC2_NUM,
-    FIMC_IS_VIDEO_SS2VC3_NUM,
-    FIMC_IS_VIDEO_TPU_NUM = 151,
-    FIMC_IS_VIDEO_SS3VC0_NUM = 152,
-    FIMC_IS_VIDEO_SS3VC1_NUM,
-    FIMC_IS_VIDEO_SS3VC2_NUM,
-    FIMC_IS_VIDEO_SS3VC3_NUM,
-    FIMC_IS_VIDEO_SCC_NUM = 156,
+    FIMC_IS_VIDEO_DIS_NUM = 150,
+    FIMC_IS_VIDEO_SCC_NUM,
     FIMC_IS_VIDEO_SCP_NUM,
     FIMC_IS_VIDEO_M0S_NUM = 160,
     FIMC_IS_VIDEO_M1S_NUM,
@@ -803,11 +867,44 @@ enum fimc_is_video_dev_num {
     FIMC_IS_VIDEO_M3P_NUM,
     FIMC_IS_VIDEO_M4P_NUM,
     FIMC_IS_VIDEO_VRA_NUM = 180,
-    FIMC_IS_VIDEO_D1C_NUM = 191,
     FIMC_IS_VIDEO_HWFC_JPEG_NUM = 200,
-    FIMC_IS_VIDEO_HWFC_THUMB_NUM = 201,
+    FIMC_IS_VIDEO_HWFC_THUMB_NUM,
+    FIMC_IS_VIDEO_SS0VC0_NUM = 210,
+    FIMC_IS_VIDEO_SS0VC1_NUM,
+    FIMC_IS_VIDEO_SS0VC2_NUM,
+    FIMC_IS_VIDEO_SS0VC3_NUM,
+    FIMC_IS_VIDEO_SS1VC0_NUM,
+    FIMC_IS_VIDEO_SS1VC1_NUM,
+    FIMC_IS_VIDEO_SS1VC2_NUM,
+    FIMC_IS_VIDEO_SS1VC3_NUM,
+    FIMC_IS_VIDEO_SS2VC0_NUM,
+    FIMC_IS_VIDEO_SS2VC1_NUM,
+    FIMC_IS_VIDEO_SS2VC2_NUM,
+    FIMC_IS_VIDEO_SS2VC3_NUM,
+    FIMC_IS_VIDEO_SS3VC0_NUM,
+    FIMC_IS_VIDEO_SS3VC1_NUM,
+    FIMC_IS_VIDEO_SS3VC2_NUM,
+    FIMC_IS_VIDEO_SS3VC3_NUM,
+    FIMC_IS_VIDEO_SS4VC0_NUM,
+    FIMC_IS_VIDEO_SS4VC1_NUM,
+    FIMC_IS_VIDEO_SS4VC2_NUM,
+    FIMC_IS_VIDEO_SS4VC3_NUM,
+    FIMC_IS_VIDEO_SS5VC0_NUM,
+    FIMC_IS_VIDEO_SS5VC1_NUM,
+    FIMC_IS_VIDEO_SS5VC2_NUM,
+    FIMC_IS_VIDEO_SS5VC3_NUM,
     FIMC_IS_VIDEO_MAX_NUM
 };
+
+/* Exynos 7870 names its stabilizer node DIS rather than D0S. */
+#define FIMC_IS_VIDEO_TPU_NUM FIMC_IS_VIDEO_DIS_NUM
+#define FIMC_IS_VIDEO_D0S_NUM FIMC_IS_VIDEO_DIS_NUM
+
+/* D1S/D1C belong to the imported Exynos 7885 ODC path. 7870 has neither.
+ * Use positive IDs above the kernel's valid range: node-group video IDs are
+ * unsigned, so negative sentinels cannot be used as switch case labels. */
+#define FIMC_IS_VIDEO_D1S_NUM (FIMC_IS_VIDEO_MAX_NUM + 1)
+#define FIMC_IS_VIDEO_D1C_NUM (FIMC_IS_VIDEO_MAX_NUM + 2)
 
 #define MAIN_CAMERA_COMPANION_NUM   (109)
 #define FRONT_CAMERA_COMPANION_NUM  (109)

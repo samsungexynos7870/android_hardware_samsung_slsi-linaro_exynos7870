@@ -53,15 +53,22 @@ ifeq ($(BOARD_CAMERA_GED_FEATURE), true)
     LOCAL_CFLAGS += -DCAMERA_GED_FEATURE
 endif
 
+# Optional HAL1 vendor QuickShot parameter support.
+ifeq ($(BOARD_CAMERA_QUICKSHOT_SUPPORT), true)
+    LOCAL_CFLAGS += -DSAMSUNG_QUICKSHOT
+endif
+
 LOCAL_CFLAGS += -D$(shell echo $(TARGET_DEVICE) | tr a-z A-Z)_CAMERA
 
-LOCAL_CFLAGS += -Wno-macro-redefined
 LOCAL_CFLAGS += -Wno-implicit-fallthrough
 LOCAL_CFLAGS += -Wno-unused-variable
 LOCAL_CFLAGS += -Wno-unused-parameter
 LOCAL_CFLAGS += -Wno-overloaded-virtual
 LOCAL_CFLAGS += -Wno-format
 LOCAL_CFLAGS += -Wno-error=date-time
+LOCAL_CFLAGS += -Wno-macro-redefined
+
+LOCAL_CFLAGS += -DUSE_LIB_ION_LEGACY
 
 
 LOCAL_C_INCLUDES += \
@@ -114,6 +121,8 @@ LOCAL_SRC_FILES:= \
     ../../exynos/libcamera/common_v3_7870/ExynosCameraFrameSelector.cpp \
     ../../exynos/libcamera/common_v3_7870/ExynosCamera1MetadataConverter.cpp \
     ../../exynos/libcamera/common_v3_7870/SensorInfos/ExynosCameraSensorInfoBase.cpp \
+    ../../exynos/libcamera/common_v3_7870/Sec/SecCameraUtil.cpp \
+    ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraSWPipe.cpp \
     ../../exynos/libcamera/common_v3_7870/MCPipes/ExynosCameraMCPipe.cpp \
     ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipe.cpp \
     ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipeFlite.cpp \
@@ -139,7 +148,6 @@ LOCAL_SRC_FILES:= \
     ../../exynos/libcamera/7870/hal1/ExynosCameraFrameFactoryPreview.cpp \
     ../../exynos/libcamera/7870/hal1/ExynosCameraFrameFactoryVision.cpp \
     ../../exynos/libcamera/7870/hal1/ExynosCameraFrameReprocessingFactory.cpp \
-    ../../exynos/libcamera/7870/hal1/ExynosCameraFrameReprocessingFactoryRemosaic.cpp \
     ../../exynos/libcamera/7870/hal1/Sec/ExynosCameraVendor.cpp \
     ../../exynos/libcamera/7870/hal1/Sec/ExynosCamera1ParametersVendor.cpp
 

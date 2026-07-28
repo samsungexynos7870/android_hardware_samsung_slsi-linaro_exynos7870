@@ -80,12 +80,12 @@ LOCAL_SRC_FILES:= \
 endif
 
 # misc
-LOCAL_CFLAGS += -Wno-macro-redefined
 LOCAL_CFLAGS += -Wno-gnu-designator
 LOCAL_CFLAGS += -Wno-braced-scalar-init
 LOCAL_CFLAGS += -Wno-format
 LOCAL_CFLAGS += -Wno-unused-parameter
 LOCAL_CFLAGS += -Wno-unused-function
+LOCAL_CFLAGS += -Wno-macro-redefined
 
 LOCAL_CFLAGS += -Wno-error=date-time
 LOCAL_CFLAGS += -Wno-overloaded-virtual
@@ -139,6 +139,10 @@ endif
 
 ifeq ($(BOARD_CAMERA_SAMSUNG_TN_FEATURE), true)
 LOCAL_CFLAGS += -DSAMSUNG_TN_FEATURE
+endif
+
+ifeq ($(BOARD_CAMERA_QUICKSHOT_SUPPORT), true)
+LOCAL_CFLAGS += -DSAMSUNG_QUICKSHOT
 endif
 
 $(foreach file,$(LOCAL_SRC_FILES),$(shell touch '$(LOCAL_PATH)/$(file)'))
