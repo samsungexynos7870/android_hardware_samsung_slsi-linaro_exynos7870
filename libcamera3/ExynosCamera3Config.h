@@ -290,6 +290,13 @@ enum REPROCESSING_BAYER_MODE {
 //#define TORCH_REAR_FILE_PATH "/sys/devices/14400000.fimc_is/torch/flash_torch_control"
 //#define TORCH_FRONT_FILE_PATH "/sys/devices/14400000.fimc_is/torch/flash_torch_control"
 
+#ifdef SENSOR_NAME_GET_FROM_FILE
+#define SENSOR_NAME_PATH_BACK "/sys/class/camera/rear/rear_sensorid"
+#define SENSOR_NAME_PATH_BACK_1 "/sys/class/camera/rear/rear2_sensorid"
+#define SENSOR_NAME_PATH_FRONT "/sys/class/camera/front/front_sensorid"
+#define SENSOR_NAME_PATH_SECURE "/sys/class/camera/secure/secure_sensorid"
+#endif
+
 #define SUPPORT_64BITS
 
 #ifndef DEBUG_RAWDUMP
