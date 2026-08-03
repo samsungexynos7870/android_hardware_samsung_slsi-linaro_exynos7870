@@ -66,7 +66,8 @@ struct ExynosSensorInfoBase *createExynosCamera1SensorInfo(int camId)
         sensorInfo = new ExynosSensorIMX219();
         break;
     case SENSOR_NAME_S5K3M3:
-        sensorInfo = new ExynosSensorS5K3M3();
+        /* ExynosSensorS5K3M3Base's usable constructor requires cameraId. */
+        sensorInfo = new ExynosSensorS5K3M3(camId);
         break;
     default:
         android_printAssert(NULL, LOG_TAG, "ASSERT(%s[%d]):Unknown sensor(%d), create default sensor, assert!!!!",
@@ -283,7 +284,8 @@ ExynosSensorIMX219::ExynosSensorIMX219()
         | EFFECT_AQUA;
 };
 
-ExynosSensorS5K3M3::ExynosSensorS5K3M3()
+ExynosSensorS5K3M3::ExynosSensorS5K3M3(int cameraId)
+    : ExynosSensorS5K3M3Base(cameraId)
 {
     effectList =
           EFFECT_NONE
