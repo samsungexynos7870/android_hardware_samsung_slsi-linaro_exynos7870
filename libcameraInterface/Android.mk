@@ -86,6 +86,10 @@ LOCAL_CFLAGS += -Wno-format
 LOCAL_CFLAGS += -Wno-unused-parameter
 LOCAL_CFLAGS += -Wno-unused-function
 LOCAL_CFLAGS += -Wno-macro-redefined
+LOCAL_CFLAGS += -Wno-tautological-compare
+LOCAL_CFLAGS += -Wno-unused-private-field
+LOCAL_CFLAGS += -Wno-unused-label
+LOCAL_CFLAGS += -Wno-infinite-recursion
 
 LOCAL_CFLAGS += -Wno-error=date-time
 LOCAL_CFLAGS += -Wno-overloaded-virtual
