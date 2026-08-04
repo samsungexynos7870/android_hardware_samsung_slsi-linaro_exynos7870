@@ -82,6 +82,11 @@ LOCAL_CFLAGS += \
     -DCAMERA_GED_FEATURE \
     -DUSE_CAMERA2_API_SUPPORT
 
+LOCAL_CFLAGS += -Wno-tautological-compare
+LOCAL_CFLAGS += -Wno-unused-private-field
+LOCAL_CFLAGS += -Wno-unused-label
+LOCAL_CFLAGS += -Wno-infinite-recursion
+
 LOCAL_C_INCLUDES += \
     $(LOCAL_PATH)/../include \
     $(LOCAL_PATH)/../libcamera3 \
@@ -146,7 +151,6 @@ LOCAL_SRC_FILES := \
     ../../exynos/libcamera/common_v2/Pipes2/ExynosCameraPipeVRA.cpp \
     ../../exynos/libcamera/common_v2/Pipes2/ExynosCameraPipeGSC.cpp \
     ../../exynos/libcamera/common_v2/Pipes2/ExynosCameraPipeJpeg.cpp \
-    ../../exynos/libcamera/common_v2/Pipes2/ExynosCameraPipePP.cpp \
     ../../exynos/libcamera/common_v2/Buffers/ExynosCameraBufferManager.cpp \
     ../../exynos/libcamera/common_v2/Buffers/ExynosCameraBufferLocker.cpp \
     ../../exynos/libcamera/common_v2/Activities/ExynosCameraActivityBase.cpp \
