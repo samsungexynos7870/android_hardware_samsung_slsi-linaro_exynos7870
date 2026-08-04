@@ -14,25 +14,64 @@
  * limitations under the License.
  */
 
-#ifndef EXYNOS_CAMERA_3_CONFIG_H__
-#define EXYNOS_CAMERA_3_CONFIG_H__
+/*!
+ * \file      ExynosCameraConfig.h
+ * \brief     hearder file for ExynosCameraConfig
+ * \author    Pilsun Jang(pilsun.jang@samsung.com)
+ * \date      2013/7/15
+ *
+ */
 
+#ifndef EXYNOS_CAMERA_CONFIG_H__
+#define EXYNOS_CAMERA_CONFIG_H__
+
+
+#include <camera/CameraParameters.h>
 #include "ExynosCameraCommonEnum.h"
 #include "ExynosCameraCommonDefine.h"
 
-#include <utils/threads.h>
-#include <utils/RefBase.h>
-#include <utils/String8.h>
-#include <cutils/properties.h>
-#include <camera/CameraParameters.h>
+/* Workaround for missing Samsung effects/ISO in AOSP CameraParameters */
+namespace android {
+class CameraParametersSec : public CameraParameters {
+public:
+    /* Preserve all AOSP CameraParameters construction forms, including
+     * CameraParameters(const String8 &), while adding Samsung constants. */
+    using CameraParameters::CameraParameters;
 
-#ifndef USE_CAMERA2_API_SUPPORT
-#define USE_CAMERA2_API_SUPPORT
-#endif
+    static inline const char PIXEL_FORMAT_YUV420SP_NV21[] = "nv21";
+    static inline const char EFFECT_CARTOONIZE[] = "cartoonize";
+    static inline const char EFFECT_POINT_RED_YELLOW[] = "point-red-yellow";
+    static inline const char EFFECT_POINT_GREEN[] = "point-green";
+    static inline const char EFFECT_POINT_BLUE[] = "point-blue";
+    static inline const char EFFECT_VINTAGE_COLD[] = "vintage-cold";
+    static inline const char EFFECT_VINTAGE_WARM[] = "vintage-warm";
+    static inline const char EFFECT_WASHED[] = "washed";
+    static inline const char ISO_AUTO[] = "auto";
+    static inline const char ISO_NIGHT[] = "night";
+    static inline const char ISO_SPORTS[] = "sports";
+    static inline const char ISO_6400[] = "6400";
+    static inline const char ISO_3200[] = "3200";
+    static inline const char ISO_1600[] = "1600";
+    static inline const char ISO_800[] = "800";
+    static inline const char ISO_400[] = "400";
+    static inline const char ISO_200[] = "200";
+    static inline const char ISO_100[] = "100";
+    static inline const char ISO_80[] = "80";
+    static inline const char ISO_50[] = "50";
+    static inline const char KEY_SUPPORTED_METERING_MODE[] = "metering-values";
+    static inline const char METERING_CENTER[] = "center";
+    static inline const char METERING_MATRIX[] = "matrix";
+    static inline const char METERING_SPOT[] = "spot";
+    static inline const char METERING_OFF[] = "off";
+    static inline const char KEY_DYNAMIC_RANGE_CONTROL[] = "dynamic-range-control";
+    static inline const char KEY_SUPPORTED_PHASE_AF[] = "phase-af-values";
+    static inline const char KEY_PHASE_AF[] = "phase-af";
+    static inline const char KEY_SUPPORTED_RT_HDR[] = "rt-hdr-values";
+    static inline const char KEY_RT_HDR[] = "rt-hdr";
+};
+}
+#define CameraParameters CameraParametersSec
 
-#ifndef CAMERA_GED_FEATURE
-#define CAMERA_GED_FEATURE
-#endif
 
 /* It will be replaced by TN */
 #ifdef CAMERA_GED_FEATURE
@@ -40,7 +79,16 @@
 #include "SecCameraConfig-common.h"
 #endif /* CAMERA_GED_FEATURE */
 
-#define EFFECT_VALUE_VERSION_2_0
+#define SMDK7870
+
+/* Android 11 provides the legacy libion API already linked by this HAL.
+ * Prefer it over private exynos_ion symbols unavailable in this BSP. */
+// This is now set via Android.mk
+// #ifndef USE_LIB_ION_LEGACY
+// #define USE_LIB_ION_LEGACY
+// #endif
+
+#ifndef USE_VENDOR_SPECIFIC_CONFIG_HEADER
 
 #define MONITOR_LOG_SYNC
 #define MONITOR_LOG_SYNC_INTERVAL 100
@@ -48,7 +96,12 @@
 #define USE_HAL3_2_METADATA_INTERFACE
 #define SUPPORT_HAL3_3_METADATA
 
-#ifndef USE_VENDOR_SPECIFIC_CONFIG_HEADER
+#define USE_NEW_NOISE_REDUCTION_ALGORITHM
+
+/* for universal GED */
+#if UNIVERSAL_CAMERA
+/* #define SAMSUNG_COMPANION */
+#endif
 
 #ifdef SAMSUNG_COMPANION
 #define MAIN_CAMERA_USE_SAMSUNG_COMPANION   (false)
@@ -68,9 +121,8 @@
 /* #define DEBUG_RAWDUMP */
 /************************************************/
 
-/* For 13MP Full Frame */
-/* #define ENABLE_13MP_FULL_FRAME            (true) */
 
+#define EFFECT_VALUE_VERSION_2_0
 
 #define LCD_SIZE_DEFAULT                (0)
 #define LCD_SIZE_800_480                (1)
@@ -78,6 +130,12 @@
 #define LCD_SIZE_1920_1080              (3)
 #define LCD_SIZE_2560_1440              (4)
 #define CAMERA_LCD_SIZE                 LCD_SIZE_1280_720
+
+/* j5y17lte, a3y17lte, a6lte and more... panorama preview sizes for 720p display. */
+#define PANORAMA_PREVIEW_WIDTH_RATIO_4_3    (960)
+#define PANORAMA_PREVIEW_HEIGHT_RATIO_4_3   (720)
+#define PANORAMA_PREVIEW_WIDTH_RATIO_16_9   (1280)
+#define PANORAMA_PREVIEW_HEIGHT_RATIO_16_9  (720)
 
 /* #define LIMIT_SCP_SIZE_UNTIL_FHD_ON_CAPTURE */   /* Even if LCD is bigger than FHD, limit scp size until FHD on capture preview  */
 #define LIMIT_SCP_SIZE_UNTIL_FHD_ON_RECORDING /* Even if LCD is bigger than FHD, limit scp size until FHD on recording preview*/
@@ -88,8 +146,13 @@
 #define CAMERA_MAGIC_ALIGN              (16)
 #define CAMERA_16PX_ALIGN               (16)
 
+/* TPU/DIS buffers use 64-byte line alignment in the v3 camera sources. */
 #define CAMERA_TPU_CHUNK_ALIGN_W        (64)
 #define CAMERA_TPU_CHUNK_ALIGN_H        (4)
+
+/* Shared Sec HAL constants missing from the public product configuration. */
+#define MFC_ALIGN                       (CAMERA_16PX_ALIGN)
+#define MULTI_BUFFER_BASE_FPS           (30)
 
 /* This value for GSC alignment refer to "csc.h" */
 #define GSCALER_IMG_ALIGN               (16)
@@ -97,27 +160,21 @@
 #define SCALER_MAX_SCALE_UP_RATIO       (8)
 
 #define INITIAL_SKIP_FRAME              (8)
+#define INITIAL_SKIP_FD_FRAME           (INITIAL_SKIP_FRAME)
 #define VISION_SKIP_FRAME               (4)
 #define EFFECT_SKIP_FRAME               (1)
 #define SMART_STAY_SKIP_COMPENSATION    (1)
 #define USE_GRALLOC_REUSE_SUPPORT
 #define USE_GRALLOC_BUFFER_COLLECTOR
 
-#define USE_FRONT_FULL_OTF
-#define USE_REAR_FULL_OTF
-
 /* Functions tobe enable */
-/* #define START_PICTURE_THREAD */
+#define START_PICTURE_THREAD
 /* #define SET_SETFILE_BY_SHOT */
 #define USE_FRAMEMANAGER
 #ifdef USE_FRAMEMANAGER
 #define USE_FRAME_REFERENCE_COUNT
 #else
 #endif
-
-#define USE_FW_OPMODE
-#define USE_CAMERA2_USE_FENCE
-#define USE_SW_FENCE
 
 #define SET_SETFILE_BY_SET_CTRL
 #ifdef SET_SETFILE_BY_SET_CTRL
@@ -127,13 +184,14 @@
 #define SET_SETFILE_BY_SET_CTRL_SCP     (false)
 #endif
 
-/* #define USE_DVFS_LOCK */
 #ifdef CAMERA_GED_FEATURE
 #else
 #define RESERVED_MEMORY_ENABLE
 #endif
 
 #define RESERVED_BUFFER_COUNT_MAX       (0)
+/* Most exynos7870 devices like j5y17lte have no secure/iris camera; keep the compiled dead path at zero. */
+#define RESERVED_NUM_SECURE_BUFFERS     (0)
 
 /* #define USE_BNS_PREVIEW */ /* use BNS on capture scenario. this change LUT size */
 
@@ -149,20 +207,19 @@
 #define FIRST_PREVIEW_TIME_CHECK /* to get time startPreview() ~ first preview frame q to hwc */
 #define USE_FD_AE
 #define FD_ROTATION                     (true)
+#define HDR_DELAY                       (1)
 /* #define USE_FRONT_PREVIEW_DRC */
 
 #define CAMERA_PREVIEW_EXPOSURE_TIME_LIMIT (100000)
 #define CAMERA_EXPOSURE_TIME_MAX           (500000)
 
-
+#define BURST_CAPTURE                   (true)
 #ifdef BURST_CAPTURE
-
 enum {
     BURST_SAVE_PHONE = 0,
     BURST_SAVE_SDCARD,
     BURST_SAVE_CALLBACK,
 };
-
 
 #define DEFAULT_BURST_SAVE              (BURST_SAVE_CALLBACK)
 #define BURST_SHUTTER_PREPICTURE        (0)
@@ -182,6 +239,10 @@ enum {
 #define FRAME_SKIP_COUNT_PREVIEW        (0)
 #define FRAME_SKIP_COUNT_PREVIEW_FRONT  (3)
 
+/* Start conservatively: select one bayer frame in QuickShot mode.
+ * Increase only after validating capture latency and stale-frame behavior. */
+#define FRAME_SKIP_COUNT_QUICK_SHOT     (1)
+
 #ifdef CAMERA_GED_FEATURE
 #define USE_ADAPTIVE_CSC_RECORDING      (true)
 #else
@@ -197,7 +258,7 @@ enum {
 #define HW_VDIS_H_RATIO                 (1.2f)
 
 #ifdef CAMERA_GED_FEATURE
-#define USE_HIGHSPEED_RECORDING         (true)
+#define USE_HIGHSPEED_RECORDING         (false)
 #else
 #define USE_HIGHSPEED_RECORDING         (true)
 #endif
@@ -225,9 +286,6 @@ enum {
 
 #define USE_JPEG_HWFC                   (true)
 
-#define MAX_YUV_STREAM_COUNT            (3)
-#define YUV_FORMAT_MIN_DURATION         ( 33331760L)       /* 30 fps */
-
 #define USE_PURE_BAYER_REPROCESSING                    (false)
 #define USE_PURE_BAYER_REPROCESSING_ON_RECORDING       (false)
 #define USE_PURE_BAYER_REPROCESSING_ON_DUAL            (false)
@@ -237,7 +295,6 @@ enum {
 #define USE_PURE_BAYER_REPROCESSING_FRONT_ON_RECORDING (false)
 #define USE_PURE_BAYER_REPROCESSING_FRONT_ON_DUAL      (false)
 #define USE_PURE_BAYER_REPROCESSING_FRONT_ON_DUAL_RECORDING  (false)
-
 
 #define USE_CAMERA_SIZE_TABLE           (true)
 
@@ -251,13 +308,6 @@ enum {
 
 #define USE_DYNAMIC_BAYER_FRONT                 (false)
 #define USE_DYNAMIC_BAYER_VIDEO_SNAP_SHOT_FRONT (false)
-
-#define USE_DYNAMIC_BAYER_120FPS_VIDEO_SNAP_SHOT (false)
-
-#define USE_DYNAMIC_BAYER_120FPS_VIDEO_SNAP_SHOT_FRONT  (false)
-#define USE_DYNAMIC_BAYER_240FPS_VIDEO_SNAP_SHOT_FRONT  (false)
-
-#define USE_DYNAMIC_BAYER_240FPS_VIDEO_SNAP_SHOT       (false)
 
 #define USE_YUV_REPROCESSING                    (true)
 #define USE_YUV_REPROCESSING_FOR_THUMBNAIL      (true)
@@ -287,9 +337,6 @@ enum REPROCESSING_BAYER_MODE {
 #define SENSOR_FW_PATH_BACK "/sys/class/camera/rear/rear_camfw"
 #define SENSOR_FW_PATH_FRONT "/sys/class/camera/front/front_camfw"
 
-//#define TORCH_REAR_FILE_PATH "/sys/devices/14400000.fimc_is/torch/flash_torch_control"
-//#define TORCH_FRONT_FILE_PATH "/sys/devices/14400000.fimc_is/torch/flash_torch_control"
-
 #ifdef SENSOR_NAME_GET_FROM_FILE
 #define SENSOR_NAME_PATH_BACK "/sys/class/camera/rear/rear_sensorid"
 #define SENSOR_NAME_PATH_BACK_1 "/sys/class/camera/rear/rear2_sensorid"
@@ -297,10 +344,14 @@ enum REPROCESSING_BAYER_MODE {
 #define SENSOR_NAME_PATH_SECURE "/sys/class/camera/secure/secure_sensorid"
 #endif
 
+
+//#define TORCH_REAR_FILE_PATH "/sys/devices/14400000.fimc_is/torch/flash_torch_control"
+//#define TORCH_FRONT_FILE_PATH "/sys/devices/14400000.fimc_is/torch/flash_torch_control"
+
 #define SUPPORT_64BITS
 
 #ifndef DEBUG_RAWDUMP
-/* #define CAMERA_PACKED_BAYER_ENABLE */
+#define CAMERA_PACKED_BAYER_ENABLE
 #endif
 /* #define USE_BUFFER_WITH_STRIDE */
 
@@ -311,14 +362,9 @@ enum REPROCESSING_BAYER_MODE {
 
 /* back */
 #define MAIN_CAMERA_FLITE_NUM                       FIMC_IS_VIDEO_SS0_NUM
+#define MAIN_1_CAMERA_FLITE_NUM                     FIMC_IS_VIDEO_SS2_NUM
+#define MAIN_CAMERA_DEPTH_VC_NUM                    FIMC_IS_VIDEO_SS0VC1_NUM
 #define MAIN_CAMERA_HAS_OWN_SCC     (false)
-
-/* Node num infomation */
-/* back */
-#define MAIN_CAMERA_FLITE_NUM               FIMC_IS_VIDEO_SS0_NUM
-#define MAIN_1_CAMERA_FLITE_NUM             FIMC_IS_VIDEO_SS2_NUM
-#define MAIN_CAMERA_DEPTH_VC_NUM            FIMC_IS_VIDEO_SS0VC1_NUM
-#define MAIN_CAMERA_HAS_OWN_SCC             (false)
 
 #define MAIN_CAMERA_SINGLE_FLITE_3AA_OTF (true)
 #define MAIN_CAMERA_DUAL_FLITE_3AA_OTF   (true)
@@ -326,10 +372,10 @@ enum REPROCESSING_BAYER_MODE {
 #define MAIN_CAMERA_SINGLE_3AA_ISP_OTF (true)
 #define MAIN_CAMERA_DUAL_3AA_ISP_OTF   (false)
 
-#define MAIN_CAMERA_SINGLE_MCSC_VRA_OTF (true)
+#define MAIN_CAMERA_SINGLE_MCSC_VRA_OTF (false)
 #define MAIN_CAMERA_DUAL_MCSC_VRA_OTF   (false)
 
-#define MAIN_CAMERA_SINGLE_REPROCESSING  (false)
+#define MAIN_CAMERA_SINGLE_REPROCESSING  (true)
 #define MAIN_CAMERA_SINGLE_SCC_CAPTURE   (false)
 
 #define MAIN_CAMERA_DUAL_REPROCESSING    (false)
@@ -340,16 +386,13 @@ enum REPROCESSING_BAYER_MODE {
 
 /* front */
 #define FRONT_CAMERA_FLITE_NUM                       FIMC_IS_VIDEO_SS1_NUM
+#define FRONT_1_CAMERA_FLITE_NUM                     FIMC_IS_VIDEO_SS3_NUM
+#define FRONT_CAMERA_DEPTH_VC_NUM                    FIMC_IS_VIDEO_SS1VC1_NUM
 #define FRONT_CAMERA_HAS_OWN_SCC    (false)
 
-/* front */
-#define FRONT_CAMERA_FLITE_NUM              FIMC_IS_VIDEO_SS1_NUM
-#define FRONT_1_CAMERA_FLITE_NUM            FIMC_IS_VIDEO_SS3_NUM
-#define FRONT_CAMERA_DEPTH_VC_NUM           FIMC_IS_VIDEO_SS1VC1_NUM
-#define FRONT_CAMERA_HAS_OWN_SCC            (false)
-
-#define VISION_CAMERA_FLITE_NUM             FIMC_IS_VIDEO_SS1_NUM
-#define SECURE_CAMERA_FLITE_NUM             FIMC_IS_VIDEO_SS3_NUM
+/* Vision/secure paths are compiled even on products that do not expose them. */
+#define VISION_CAMERA_FLITE_NUM                      FIMC_IS_VIDEO_SS1_NUM
+#define SECURE_CAMERA_FLITE_NUM                      FIMC_IS_VIDEO_SS3_NUM
 
 #define FRONT_CAMERA_SINGLE_FLITE_3AA_OTF (true)
 #define FRONT_CAMERA_DUAL_FLITE_3AA_OTF   (false)
@@ -357,10 +400,10 @@ enum REPROCESSING_BAYER_MODE {
 #define FRONT_CAMERA_SINGLE_3AA_ISP_OTF (true)
 #define FRONT_CAMERA_DUAL_3AA_ISP_OTF   (true)
 
-#define FRONT_CAMERA_SINGLE_MCSC_VRA_OTF (true)
+#define FRONT_CAMERA_SINGLE_MCSC_VRA_OTF (false)
 #define FRONT_CAMERA_DUAL_MCSC_VRA_OTF   (false)
 
-#define FRONT_CAMERA_SINGLE_REPROCESSING  (false)
+#define FRONT_CAMERA_SINGLE_REPROCESSING  (true)
 #define FRONT_CAMERA_SINGLE_SCC_CAPTURE   (false)
 
 #define FRONT_CAMERA_DUAL_REPROCESSING    (false)
@@ -383,7 +426,10 @@ enum REPROCESSING_BAYER_MODE {
 #define SENSOR_INSTANT_SHIFT        (16)
 #define SENSOR_SSTREAM_SHIFT        (0)
 
-#define INPUT_SENSOR_MASK   0xFC000000 /* sensor scenario */
+#define BINNING_SETFILE_INDEX        ISS_SUB_SCENARIO_FHD_240FPS
+
+/* Sensor scenario occupies the upper six bits in the v3 HAL sensor ID. */
+#define INPUT_SENSOR_MASK   0xFC000000
 #define INPUT_SENSOR_SHIFT   26
 #define INPUT_STREAM_MASK   0xFF000000 /* stream type : 1 (reprocessing) */
 #define INPUT_STREAM_SHIFT   24
@@ -399,78 +445,6 @@ enum REPROCESSING_BAYER_MODE {
 #define PREVIEW_GSC_NODE_NUM            (4)  /* 4 = MSC from Exynos5420 */
 #define PICTURE_GSC_NODE_NUM            (4)  /* 0,1,2 = GSC */
 #define VIDEO_GSC_NODE_NUM              (4)
-
-/* #define USE_INTERNAL_FRAME */
-#ifdef USE_INTERNAL_FRAME
-#define NUM_INTERNAL_FRAME_COUNT        (3)
-#define NUM_INTERNAL_FRAME_BUFFERS      (30) /* HAL3.2 internal frame */
-#else
-#define NUM_INTERNAL_FRAME_COUNT        (0)
-#define NUM_INTERNAL_FRAME_BUFFERS      (30) /* HAL3.2 internal frame */
-#endif
-
-#define NUM_REQUEST_PREVIEW_BUFFER      (9)
-#define NUM_REQUEST_CALLBACK_BUFFER     (9)
-#define NUM_REQUEST_VIDEO_BUFFER        (8)
-#define NUM_REQUEST_JPEG_BUFFER         (5)
-#define NUM_REQUEST_BURST_CAPTURE_BUFFER    (4)
-#define NUM_REQUEST_RAW_BUFFER          (6)
-#define NUM_REQUEST_BAYER_BUFFER            (6)
-#define NUM_SERVICE_PREVIEW_BUFFER      (2)
-#define NUM_SERVICE_CALLBACK_BUFFER     (5)
-#define NUM_SERVICE_VIDEO_BUFFER        (9)
-#define NUM_SERVICE_JPEG_BUFFER         (6)
-#define NUM_SERVICE_RAW_BUFFER          (6)
-
-#define NUM_REQUEST_CAPTURE_BUFFER          (2)
-#ifdef USE_DUAL_CAMERA
-#define DUAL_NUM_REQUEST_PREVIEW_BUFFER     (NUM_REQUEST_PREVIEW_BUFFER + SYNC_WAITING_COUNT)
-#define DUAL_NUM_REQUEST_CALLBACK_BUFFER    (NUM_REQUEST_CALLBACK_BUFFER + SYNC_WAITING_COUNT)
-#define DUAL_NUM_REQUEST_VIDEO_BUFFER       (NUM_REQUEST_VIDEO_BUFFER + SYNC_WAITING_COUNT)
-#endif
-
-#define FPS120_NUM_REQUEST_RAW_BUFFER       (NUM_REQUEST_RAW_BUFFER)
-#define FPS120_NUM_REQUEST_PREVIEW_BUFFER   (NUM_REQUEST_PREVIEW_BUFFER * 3)
-#define FPS120_NUM_REQUEST_CALLBACK_BUFFER  (NUM_REQUEST_CALLBACK_BUFFER * 3)
-#define FPS120_NUM_REQUEST_VIDEO_BUFFER     (NUM_REQUEST_VIDEO_BUFFER * 3)
-#define FPS120_NUM_REQUEST_JPEG_BUFFER      (NUM_REQUEST_JPEG_BUFFER)
-#define FPS120_NUM_SERVICE_RAW_BUFFER       (6)
-#define FPS120_NUM_SERVICE_PREVIEW_BUFFER   (1 + 19)
-#define FPS120_NUM_SERVICE_CALLBACK_BUFFER  (15)
-#define FPS120_NUM_SERVICE_VIDEO_BUFFER     (5)
-#define FPS120_NUM_SERVICE_JPEG_BUFFER      (1)
-
-
-/* #define SET_SETFILE_BY_SHOT */
-#define SET_SETFILE_BY_SET_CTRL
-#ifdef SET_SETFILE_BY_SET_CTRL
-#define SET_SETFILE_BY_SET_CTRL_3AA     (false)
-#define SET_SETFILE_BY_SET_CTRL_ISP     (true)
-#endif
-#define BINNING_SETFILE_INDEX           ISS_SUB_SCENARIO_FHD_240FPS
-
-/* This define was used for processCaptureRequest to keep minimum request count */
-#define NUM_REQUEST_BLOCK_MAX           (NUM_REQUEST_PREVIEW_BUFFER)
-#define NUM_REQUEST_BLOCK_MIN           (6)
-
-/***********************
- * Time Configurations *
- ***********************/
-#define HDR_DELAY                       (3)
-#define SENSOR_CONTROL_DELAY            (2)
-#ifdef OIS_CAPTURE
-#define OISCAPTURE_DELAY                (2)
-#endif
-
-#define MULTIPLE_VSYNC_DETECT_OFFSET_NS     (3000000)
-#define FRAME_SCHEDULE_OFFSET_NS            (1000000)
-#define FRAME_DURATION_OFFSET_US            (1000)
-
-#define HIGH_RESOLUTION_MIN_PIXEL_SIZE  (12 * 1024 * 1024) /* 12MP pixel */
-#define FHD_PIXEL_SIZE                  (1920 * 1080)
-#define STALL_FORMAT_MIN_DURATION       ( 50000000L) /* 20 fps */
-#define HIGH_RESOLUTION_MIN_DURATION    (100000000L) /* 10 fps */
-
 
 #if (SUPPORT_BACK_HW_VDIS || SUPPORT_FRONT_HW_VDIS)
 /*
@@ -489,29 +463,30 @@ enum REPROCESSING_BAYER_MODE {
 #define NUM_PREVIEW_BUFFERS             (9 + SHOT_RECOVERY_COUNT + 3)
 #define NUM_PREVIEW_SPARE_BUFFERS       (3)
 #define INIT_SCP_BUFFERS                (5)
-#define NUM_PICTURE_BUFFERS             (4)
+#define NUM_PICTURE_BUFFERS             (5)
 #define NUM_REPROCESSING_BUFFERS        (1)
 #define NUM_RECORDING_BUFFERS           (8)
-#define NUM_FASTAESTABLE_BUFFERS        (10)
+#define NUM_FASTAESTABLE_BUFFER         (10)
 #define NUM_PREVIEW_BUFFERS_MARGIN      (1)
 #else
-
 #define MAX_BUFFERS                     (32)
 #define NUM_SENSOR_BUFFERS              (4 + REPROCESSING_BAYER_HOLD_COUNT)
-#define NUM_BAYER_BUFFERS               (1 + REPROCESSING_BAYER_HOLD_COUNT + SHOT_RECOVERY_COUNT)
+#define NUM_BAYER_BUFFERS               (4 + REPROCESSING_BAYER_HOLD_COUNT + SHOT_RECOVERY_COUNT)
 #define INIT_BAYER_BUFFERS              (4 + SHOT_RECOVERY_COUNT)
-#define NUM_3AA_BUFFERS                 (MAX_BUFFERS)
+#define NUM_3AA_BUFFERS                 NUM_BAYER_BUFFERS
 #define NUM_HW_DIS_BUFFERS              (NUM_3AA_BUFFERS + 3)
 #define NUM_VRA_BUFFERS                 (2)
 #define NUM_PREVIEW_BUFFERS             (9 + SHOT_RECOVERY_COUNT + 3)
 #define NUM_PREVIEW_SPARE_BUFFERS       (3)
 #define INIT_SCP_BUFFERS                (5)
-#define NUM_PICTURE_BUFFERS             (8)
+#define NUM_PICTURE_BUFFERS             (5)
 #define NUM_REPROCESSING_BUFFERS        (1)
 #define NUM_RECORDING_BUFFERS           (8)
-#define NUM_FASTAESTABLE_BUFFERS        (10)
+#define NUM_FASTAESTABLE_BUFFER         (10)
 #define NUM_PREVIEW_BUFFERS_MARGIN      (1)
 #endif
+
+#define NUM_THUMBNAIL_POSTVIEW_BUFFERS  (NUM_PICTURE_BUFFERS)
 
 #ifdef CAMERA_GED_FEATURE
 #define RESERVED_NUM_BAYER_BUFFERS      (NUM_BAYER_BUFFERS)
@@ -526,15 +501,24 @@ enum REPROCESSING_BAYER_MODE {
 #endif /* DEBUG_RAWDUMP */
 #endif
 
-#define PIPE_FLITE_PREPARE_COUNT            (0)
+/* Optional reserved-memory pools not provided by the public GED config. */
+#define NUM_HIDING_BUFFER_COUNT                 (0)
+#define RESERVED_NUM_ISP_BUFFERS_ON_UHD         (0)
+#define FRONT_RESERVED_NUM_ISP_BUFFERS_ON_UHD   (0)
+#define RESERVED_NUM_JPEG_BUFFERS               (0)
+#define FRONT_RESERVED_NUM_JPEG_BUFFERS         (0)
+#define RESERVED_NUM_JPEG_BUFFERS_ON_UHD        (0)
+#define FRONT_RESERVED_NUM_JPEG_BUFFERS_ON_UHD  (0)
+#define RESERVED_NUM_POST_PIC_BUFFERS           (0)
+
+#define PIPE_FLITE_PREPARE_COUNT            (3)
 #define PIPE_3AC_PREPARE_COUNT              (3)
 #define PIPE_3AA_ISP_PREPARE_COUNT          (3)
-#define PIPE_3AA_PREPARE_COUNT              (2)
 #define PIPE_ISP_PREPARE_COUNT              (0)
 #define PIPE_SCC_PREPARE_COUNT              (1)
 #define PIPE_SCP_PREPARE_COUNT              (3)
 
-#define PIPE_FLITE_FRONT_PREPARE_COUNT      (0)
+#define PIPE_FLITE_FRONT_PREPARE_COUNT      (3)
 #define PIPE_SCC_FRONT_PREPARE_COUNT        (1)
 #define PIPE_SCP_FRONT_PREPARE_COUNT        (3)
 #define PIPE_SCP_REPROCESSING_PREPARE_COUNT (3)
@@ -548,6 +532,7 @@ enum REPROCESSING_BAYER_MODE {
 
 /* TO DO : will remove */
 #define REPROCESSING_BAYER_HOLD_COUNT   (1)
+#define FRONT_NUM_SENSOR_BUFFERS        (NUM_SENSOR_BUFFERS)
 #define FRONT_NUM_BAYER_BUFFERS         (NUM_BAYER_BUFFERS)
 #define FRONT_NUM_3AA_BUFFERS           (NUM_3AA_BUFFERS)
 #define FRONT_NUM_PICTURE_BUFFERS       (NUM_PICTURE_BUFFERS)
@@ -563,7 +548,7 @@ enum REPROCESSING_BAYER_MODE {
 #define MFC_7X_BUFFER_OFFSET            (256)
 
 #if (USE_HIGHSPEED_RECORDING)
-#define FPS60_NUM_SENSOR_BUFFERS         (NUM_SENSOR_BUFFERS + 5)
+#define FPS60_NUM_NUM_SENSOR_BUFFERS         (NUM_SENSOR_BUFFERS + 5)
 #define FPS60_NUM_NUM_BAYER_BUFFERS          (NUM_BAYER_BUFFERS + 5)
 #define FPS60_INIT_BAYER_BUFFERS             (INIT_BAYER_BUFFERS * 2)
 #define FPS60_NUM_HW_DIS_BUFFERS             (NUM_HW_DIS_BUFFERS + 5)
@@ -574,86 +559,45 @@ enum REPROCESSING_BAYER_MODE {
 #define FPS60_NUM_RECORDING_BUFFERS          (NUM_RECORDING_BUFFERS + 5)
 #define FPS60_INITIAL_SKIP_FRAME             (INITIAL_SKIP_FRAME)
 #define FPS60_REPROCESSING_BAYER_HOLD_COUNT  (REPROCESSING_BAYER_HOLD_COUNT)
+#define FPS60_FRONT_NUM_SENSOR_BUFFERS       (FRONT_NUM_SENSOR_BUFFERS)
 #define FPS60_FRONT_NUM_BAYER_BUFFERS        (FRONT_NUM_BAYER_BUFFERS)
 #define FPS60_FRONT_NUM_PICTURE_BUFFERS      (FRONT_NUM_PICTURE_BUFFERS)
 #define FPS60_NUM_PREVIEW_BUFFERS_MARGIN     (NUM_PREVIEW_BUFFERS_MARGIN + 1)
-#define FPS60_NUM_REQUEST_BLOCK_MAX          (FPS60_NUM_PREVIEW_BUFFERS)
-#define FPS60_NUM_REQUEST_BLOCK_MIN          (FPS60_INIT_BAYER_BUFFERS + 2)
 
 #define FPS60_PIPE_FLITE_PREPARE_COUNT       (FPS60_INIT_BAYER_BUFFERS)
 #define FPS60_PIPE_3AC_PREPARE_COUNT         (FPS60_INIT_BAYER_BUFFERS)
 #define FPS60_PIPE_3AA_ISP_PREPARE_COUNT     (FPS60_INIT_BAYER_BUFFERS)
-#define FPS60_PIPE_3AA_PREPARE_COUNT         (FPS60_INIT_BAYER_BUFFERS)
 #define FPS60_PIPE_SCP_PREPARE_COUNT         (FPS60_INIT_BAYER_BUFFERS)
 #define FPS60_PIPE_SCP_REPROCESSING_PREPARE_COUNT (3)
 
-#define FPS120_NUM_SENSOR_BUFFERS            (NUM_SENSOR_BUFFERS * 3)
+#define FPS120_NUM_NUM_SENSOR_BUFFERS        (NUM_SENSOR_BUFFERS * 3)
 #define FPS120_NUM_NUM_BAYER_BUFFERS         (NUM_BAYER_BUFFERS * 3)
 #define FPS120_INIT_BAYER_BUFFERS            (INIT_BAYER_BUFFERS * 3)
-#define FPS120_NUM_3AA_BUFFERS               (NUM_3AA_BUFFERS)
 #define FPS120_NUM_HW_DIS_BUFFERS            (NUM_HW_DIS_BUFFERS * 3)
 #define FPS120_NUM_VRA_BUFFERS               (2)
 #define FPS120_NUM_PREVIEW_BUFFERS           (NUM_PREVIEW_BUFFERS * 3)
 #define FPS120_NUM_PICTURE_BUFFERS           (NUM_PICTURE_BUFFERS)
 #define FPS120_NUM_REPROCESSING_BUFFERS      (NUM_REPROCESSING_BUFFERS)
 #define FPS120_NUM_RECORDING_BUFFERS         (NUM_RECORDING_BUFFERS * 3)
-#define FPS120_NUM_FASTAESTABLE_BUFFERS      (NUM_FASTAESTABLE_BUFFERS)
 #define FPS120_INITIAL_SKIP_FRAME            (INITIAL_SKIP_FRAME)
 #define FPS120_REPROCESSING_BAYER_HOLD_COUNT (REPROCESSING_BAYER_HOLD_COUNT)
+#define FPS120_FRONT_NUM_SENSOR_BUFFERS      (FRONT_NUM_SENSOR_BUFFERS)
 #define FPS120_FRONT_NUM_BAYER_BUFFERS       (FRONT_NUM_BAYER_BUFFERS)
 #define FPS120_FRONT_NUM_PICTURE_BUFFERS     (FRONT_NUM_PICTURE_BUFFERS)
 #define FPS120_NUM_PREVIEW_BUFFERS_MARGIN    (NUM_PREVIEW_BUFFERS_MARGIN + 1)
-#define FPS120_NUM_REQUEST_BLOCK_MAX         (FPS120_NUM_PREVIEW_BUFFERS)
-#define FPS120_NUM_REQUEST_BLOCK_MIN         (FPS120_INIT_BAYER_BUFFERS + 8)
 
-#define FPS120_PIPE_FLITE_PREPARE_COUNT       (3)
+#define FPS120_PIPE_FLITE_PREPARE_COUNT       (FPS120_INIT_BAYER_BUFFERS)
 #define FPS120_PIPE_3AC_PREPARE_COUNT         (FPS120_INIT_BAYER_BUFFERS)
 #define FPS120_PIPE_3AA_ISP_PREPARE_COUNT     (FPS120_INIT_BAYER_BUFFERS)
-#define FPS120_PIPE_3AA_PREPARE_COUNT         (FPS120_INIT_BAYER_BUFFERS)
 #define FPS120_PIPE_SCP_PREPARE_COUNT         (FPS120_INIT_BAYER_BUFFERS)
 #define FPS120_PIPE_SCP_REPROCESSING_PREPARE_COUNT (3)
 #endif
-
-#define FPS240_NUM_REPROCESSING_BUFFERS      (NUM_REPROCESSING_BUFFERS)
-#define FPS240_NUM_FASTAESTABLE_BUFFERS      (NUM_FASTAESTABLE_BUFFERS)
-#define FPS240_REPROCESSING_BAYER_HOLD_COUNT (REPROCESSING_BAYER_HOLD_COUNT)
-
-#define FPS240_INIT_BAYER_BUFFERS            (INIT_BAYER_BUFFERS * 4)
-
-/* HIGHSPEED_240 */
-#define FPS240_NUM_REQUEST_RAW_BUFFER           (NUM_REQUEST_RAW_BUFFER)
-#define FPS240_NUM_REQUEST_BAYER_BUFFER         (NUM_REQUEST_BAYER_BUFFER)
-#define FPS240_NUM_REQUEST_PREVIEW_BUFFER       (NUM_REQUEST_PREVIEW_BUFFER)
-#define FPS240_NUM_REQUEST_CALLBACK_BUFFER      (NUM_REQUEST_CALLBACK_BUFFER)
-#define FPS240_NUM_REQUEST_VIDEO_BUFFER         (NUM_REQUEST_VIDEO_BUFFER * 4)
-#define FPS240_NUM_REQUEST_JPEG_BUFFER          (NUM_REQUEST_JPEG_BUFFER)
-#define FPS240_NUM_REQUEST_BURST_CAPTURE_BUFFER (NUM_REQUEST_BURST_CAPTURE_BUFFER)
-#define FPS240_NUM_REQUEST_CAPTURE_BUFFER       (NUM_REQUEST_CAPTURE_BUFFER)
-
-
-#define FPS240_NUM_SENSOR_BUFFERS               (NUM_SENSOR_BUFFERS * 4)
-#define FPS240_NUM_3AA_BUFFERS                  (32)   /* VIDEO_MAX_FRAME : 32 */
-#define FPS240_NUM_HW_DIS_BUFFERS               (NUM_HW_DIS_BUFFERS * 3)
-
-#define FPS240_NUM_BAYER_BUFFERS                (NUM_BAYER_BUFFERS * 3)
-#define FPS240_NUM_PREVIEW_BUFFERS              (NUM_PREVIEW_BUFFERS * 3)
-#define FPS240_NUM_RECORDING_BUFFERS            (NUM_RECORDING_BUFFERS * 3)
-
-#define FPS240_NUM_REQUEST_BLOCK_MAX         (FPS240_NUM_PREVIEW_BUFFERS)
-#define FPS240_NUM_REQUEST_BLOCK_MIN         (FPS240_INIT_BAYER_BUFFERS + 16)
-
-// #ifdef SUPPORT_HFR_BATCH_MODE
-// #define FPS240_PIPE_FLITE_PREPARE_COUNT         (PIPE_FLITE_PREPARE_COUNT)
-// #define FPS240_PIPE_3AA_PREPARE_COUNT           (PIPE_3AA_PREPARE_COUNT)
-// #else
-#define FPS240_PIPE_FLITE_PREPARE_COUNT         (PIPE_FLITE_PREPARE_COUNT * 3)
-#define FPS240_PIPE_3AA_PREPARE_COUNT           (PIPE_3AA_PREPARE_COUNT * 3)
-// #endif
 
 #define V4L2_CAMERA_MEMORY_TYPE         (V4L2_MEMORY_DMABUF) /* (V4L2_MEMORY_USERPTR) */
 #define SCC_OUTPUT_COLOR_FMT            (V4L2_PIX_FMT_YUYV)
 #define JPEG_INPUT_COLOR_FMT            (SCC_OUTPUT_COLOR_FMT)
 #define CAMERA_BAYER_FORMAT             (V4L2_PIX_FMT_SBGGR12)
+/* Public GED config uses one 12-bit Bayer format throughout the 7870 chain. */
 #define CAMERA_FLITE_BAYER_FORMAT       (CAMERA_BAYER_FORMAT)
 #define CAMERA_3AC_BAYER_FORMAT         (CAMERA_BAYER_FORMAT)
 #define CAMERA_3AP_BAYER_FORMAT         (CAMERA_BAYER_FORMAT)
@@ -712,11 +656,14 @@ enum REPROCESSING_BAYER_MODE {
 #define PERFRAME_INFO_DIRTY_REPROCESSING_MCSC   PERFRAME_INFO_INDEX_1
 
 #define PERFRAME_INFO_YUV_REPROCESSING_MCSC     PERFRAME_INFO_INDEX_0
+/* TPU1/ODC is not present on Exynos 7870, but the shared HAL1 source
+ * still compiles its disabled reprocessing path. Keep its metadata slot
+ * separate from the active 3AA/ISP/MCSC groups. */
+#define PERFRAME_INFO_REPROCESSING_TPU          PERFRAME_INFO_INDEX_3
 
 #define PERFRAME_3AA_POS                        PER_FRAME_GROUP_0
 #define PERFRAME_ISP_POS                        PER_FRAME_GROUP_1
 
-#define PERFRAME_BACK_VC0_POS           (0)
 #define PERFRAME_BACK_3AC_POS           (0)
 #define PERFRAME_BACK_3AP_POS           (1)
 #define PERFRAME_BACK_ISPC_POS          (0)
@@ -726,21 +673,15 @@ enum REPROCESSING_BAYER_MODE {
 #define PERFRAME_BACK_MCSC0_POS         (0)
 #define PERFRAME_BACK_MCSC1_POS         (0)
 #define PERFRAME_BACK_MCSC2_POS         (0)
+#define PERFRAME_BACK_VC0_POS           (0)
 
-#define PERFRAME_FRONT_VC0_POS          (PERFRAME_BACK_VC0_POS)
-
-/*
-#define PERFRAME_FRONT_3AC_POS          (1)
-#define PERFRAME_FRONT_3AP_POS          (0)
-#define PERFRAME_FRONT_SCC_POS          (0)
-#define PERFRAME_FRONT_SCP_POS          (1)
-*/
 #define PERFRAME_FRONT_3AC_POS          (PERFRAME_BACK_3AC_POS)
 #define PERFRAME_FRONT_3AP_POS          (PERFRAME_BACK_3AP_POS)
 #define PERFRAME_FRONT_ISPC_POS         (PERFRAME_BACK_ISPC_POS)
 #define PERFRAME_FRONT_ISPP_POS         (PERFRAME_BACK_ISPP_POS)
 #define PERFRAME_FRONT_SCC_POS          (PERFRAME_BACK_SCC_POS)
 #define PERFRAME_FRONT_SCP_POS          (PERFRAME_BACK_SCP_POS)
+#define PERFRAME_FRONT_VC0_POS          (0)
 
 #define PERFRAME_REPROCESSING_3AP_POS   (0)
 #define PERFRAME_REPROCESSING_3AC_POS   (1)
@@ -748,11 +689,10 @@ enum REPROCESSING_BAYER_MODE {
 #define PERFRAME_REPROCESSING_ISPC_POS    (0)
 #define PERFRAME_REPROCESSING_ISPP_POS    (0)
 #define PERFRAME_REPROCESSING_MCSC0_POS   (PERFRAME_REPROCESSING_SCC_POS)
+#define PERFRAME_REPROCESSING_MCSC1_POS   (0)
 #define PERFRAME_REPROCESSING_MCSC2_POS   (0)
 #define PERFRAME_REPROCESSING_MCSC3_POS   (0)
 #define PERFRAME_REPROCESSING_MCSC4_POS   (0)
-
-#define PERFRAME_REPROCESSING_MCSC1_POS   (2)
 
 #define WAITING_TIME                     (5000)   /* 5msec */
 #define TOTAL_WAITING_TIME               (3000 * 1000)  /* 3000msec */
@@ -768,6 +708,8 @@ enum REPROCESSING_BAYER_MODE {
 #define VISION_WIDTH                     (320)
 #define VISION_HEIGHT                    (180)
 
+/* The secure/iris path is not exposed by j5y17lte, but the shared vision
+ * factory references these constants unconditionally. */
 #define SECURE_CAMERA_WIDTH              (2400)
 #define SECURE_CAMERA_HEIGHT             (2400)
 
@@ -783,12 +725,8 @@ enum REPROCESSING_BAYER_MODE {
 #define BEST_FACE_DURATION          400000  /* 2.5fps */
 #define ERASER_DURATION             800000  /* 1.25fps */
 #define NORMAL_BURST_DURATION       90000   /* about 11fps */
+#define PANORAMA_SHOT_DURATION      (NORMAL_BURST_DURATION)
 #define SELFIE_ALARM_DURATION       330000  /* about 3fps */
-
-/* Following flags are used in Single chain configuration.
-   Defined here to prevent compilation error */
-#define M2M_SCALER_MAX_DOWNSCALE_RATIO  (16)
-#define MCSC_DOWN_RATIO_SMALL_YUV       (2)
 
 #define USE_MEM2MEM_GSC
 
@@ -817,7 +755,7 @@ enum YUV_RANGE {
 enum pipeline {
     PIPE_FLITE                  = 0,
     PIPE_VC0,
-    PIPE_VC1, // DEPTH MAP
+    PIPE_VC1, /* depth map */
     PIPE_VC2,
     PIPE_VC3,
     PIPE_3AA,
@@ -827,7 +765,7 @@ enum pipeline {
     PIPE_ISPC,
     PIPE_ISPP,
     PIPE_DIS,
-    PIPE_TPU = PIPE_DIS, // 21 misc
+    PIPE_TPU = PIPE_DIS,
     PIPE_TPUP,
     PIPE_MCSC,
     PIPE_SCP,
@@ -841,16 +779,18 @@ enum pipeline {
     PIPE_POST_3AA_ISP,
     PIPE_SCC,
     PIPE_GSC,
+    PIPE_GSC_CALLBACK,
     PIPE_GSC_VIDEO,
     PIPE_GSC_VRA,
     PIPE_GSC_PICTURE,
     PIPE_JPEG,
+
+    /* Disabled ODC path retained by the shared Exynos 7885 HAL1 source. */
+    PIPE_TPU1,
+    PIPE_TPU1C,
     MAX_PIPE_NUM,
 
-    /*
-     * PIPE_XXX_FRONT are deprecated define.
-     * Don't use this. (just let for common code compile)
-     */
+    /* Deprecated front-camera IDs kept for common-source compatibility. */
     PIPE_FLITE_FRONT = 100,
     PIPE_3AA_FRONT,
     PIPE_3AC_FRONT,
@@ -890,6 +830,7 @@ enum pipeline {
     PIPE_GSC_REPROCESSING,
     PIPE_GSC_REPROCESSING2,
     PIPE_GSC_REPROCESSING3,
+    PIPE_GSC_REPROCESSING4,
 #ifdef UVS
     PIPE_UVS_REPROCESSING,
 #endif
@@ -901,6 +842,11 @@ enum pipeline {
     MAX_PIPE_NUM_REPROCESSING
 };
 
+/*
+ * The HAL stores /dev/videoN as 100 + the FIMC-IS driver's video ID.
+ * Keep this table in lockstep with fimc-is2/fimc-is-video.h from the
+ * Exynos 7870 kernel (SSxVCy starts at driver ID 110, hence video210).
+ */
 enum fimc_is_video_dev_num {
     FIMC_IS_VIDEO_BAS_NUM = 100,
     FIMC_IS_VIDEO_SS0_NUM = 101,
@@ -962,9 +908,13 @@ enum fimc_is_video_dev_num {
     FIMC_IS_VIDEO_MAX_NUM
 };
 
+/* Exynos 7870 names its stabilizer node DIS rather than D0S. */
 #define FIMC_IS_VIDEO_TPU_NUM FIMC_IS_VIDEO_DIS_NUM
 #define FIMC_IS_VIDEO_D0S_NUM FIMC_IS_VIDEO_DIS_NUM
-/* Unsupported 7870 D1 nodes: positive sentinels avoid unsigned case-label narrowing. */
+
+/* D1S/D1C belong to the imported Exynos 7885 ODC path. 7870 has neither.
+ * Use positive IDs above the kernel's valid range: node-group video IDs are
+ * unsigned, so negative sentinels cannot be used as switch case labels. */
 #define FIMC_IS_VIDEO_D1S_NUM (FIMC_IS_VIDEO_MAX_NUM + 1)
 #define FIMC_IS_VIDEO_D1C_NUM (FIMC_IS_VIDEO_MAX_NUM + 2)
 
