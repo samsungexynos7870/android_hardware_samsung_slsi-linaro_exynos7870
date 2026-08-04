@@ -149,9 +149,15 @@ LOCAL_SRC_FILES := \
     ../../exynos/libcamera/34xx/hal1/ExynosCamera.cpp \
     ../../exynos/libcamera/34xx/hal1/ExynosCamera1Parameters.cpp \
     ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameFactory.cpp \
+    ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameFactory3aaIspM2M.cpp \
+    ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameFactory3aaIspM2MTpu.cpp \
+    ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameFactory3aaIspOtf.cpp \
+    ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameFactory3aaIspOtfTpu.cpp \
+    ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameFactoryFront.cpp \
     ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameFactoryPreview.cpp \
     ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameFactoryVision.cpp \
     ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameReprocessingFactory.cpp \
+    ../../exynos/libcamera/34xx/hal1/ExynosCameraFrameReprocessingFactoryNV21.cpp \
     ../../exynos/libcamera/34xx/hal1/Ged/ExynosCameraVendor.cpp \
     ../../exynos/libcamera/34xx/hal1/Ged/ExynosCamera1ParametersVendor.cpp
 
