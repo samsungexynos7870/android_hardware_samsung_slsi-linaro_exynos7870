@@ -142,6 +142,8 @@ LOCAL_SRC_FILES := \
     ../../exynos/libcamera/common_v2/Ged/ExynosCameraActivityAutofocusVendor.cpp \
     ../../exynos/libcamera/common_v2/Ged/ExynosCameraActivityFlashVendor.cpp \
     ../../exynos/libcamera/common_v2/Ged/ExynosCameraFrameSelectorVendor.cpp \
+    ../../exynos/libcamera/common_v2/Ged/ExynosJpegEncoderForCameraVendor.cpp \
+    ../../exynos/libcamera/74xx/JpegEncoderForCamera/ExynosJpegEncoderForCamera.cpp \
     ../../exynos/libcamera/34xx/ExynosCameraUtilsModule.cpp \
     ../../exynos/libcamera/34xx/hal1/ExynosCameraSizeControl.cpp \
     ../../exynos/libcamera/34xx/ExynosCameraActivityControl.cpp \
