@@ -77,20 +77,20 @@ public:
     ExynosSensorSR544();
 };
 
-struct ExynosSensorSR259 : public ExynosSensorSR259Base {
-public:
-    ExynosSensorSR259();
-};
+//struct ExynosSensorSR259 : public ExynosSensorSR259Base {
+//public:
+//    ExynosSensorSR259();
+//};
 
 struct ExynosSensorS5K4H5YC : public ExynosSensorS5K4H5YCBase {
 public:
     ExynosSensorS5K4H5YC();
 };
 
-struct ExynosSensorS5K3P8SP : public ExynosSensorS5K3P8SPBase {
-public:
-    ExynosSensorS5K3P8SP();
-};
+//struct ExynosSensorS5K3P8SP : public ExynosSensorS5K3P8SPBase {
+//public:
+//    ExynosSensorS5K3P8SP();
+//};
 
 struct ExynosSensorIMX258 : public ExynosSensorIMX258Base {
 public:
@@ -104,7 +104,7 @@ public:
 
 struct ExynosSensorS5K3M3 : public ExynosSensorS5K3M3Base {
 public:
-    ExynosSensorS5K3M3(int cameraId);
+    ExynosSensorS5K3M3();
 };
 
 }; /* namespace android */
