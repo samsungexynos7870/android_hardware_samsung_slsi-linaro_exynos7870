@@ -355,7 +355,10 @@ enum REPROCESSING_BAYER_MODE {
 #endif
 /* #define USE_BUFFER_WITH_STRIDE */
 
-#define OWN_MCSC_HW                 (true)
+/* Exynos7870 (fimc-is v3_11_0) has no MCSC IP: the kernel never registers
+   the M0P/M1S nodes (SOC_MCS undefined -> no /dev/video16x/17x).
+   Enable it only when the kernel actually provides MCSC (7880-style). */
+#define OWN_MCSC_HW                 (false)
 
 /* back */
 #define MAIN_CAMERA_FLITE_NUM                       FIMC_IS_VIDEO_SS0_NUM
