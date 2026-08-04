@@ -38,19 +38,19 @@ LOCAL_C_INCLUDES += \
 	$(TOP)/system/memory/libion/kernel-headers \
 	$(TOP)/hardware/samsung_slsi-linaro/$(TARGET_SOC)/libcamera \
 	$(TOP)/hardware/samsung_slsi-linaro/$(TARGET_SOC)/libcamera3 \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/7870 \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/7870/hal1\
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/7870/hal3\
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870 \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Activities \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Buffers \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/MCPipes \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Pipes2 \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/PostProcessing \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/SensorInfos \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/SizeTables \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Sec \
-    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v3_7870/Sec/PPUniPlugin \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/34xx \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/34xx/hal1\
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/34xx/hal3\
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2 \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/Activities \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/Buffers \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/MCPipes \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/Pipes2 \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/PostProcessing \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/SensorInfos \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/SizeTables \
+	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/Sec \
+    $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/Sec/PPUniPlugin \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos/include \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos/include \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos5/include \
@@ -73,10 +73,10 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/../libcamera/SensorInfos
 
 ifeq ($(BOARD_CAMERA_HAL3_FEATURE), true)
 LOCAL_SRC_FILES:= \
-	../../exynos/libcamera/common_v3_7870/ExynosCamera3Interface.cpp
+	../../exynos/libcamera/common_v2/ExynosCamera3Interface.cpp
 else
 LOCAL_SRC_FILES:= \
-	../../exynos/libcamera/common_v3_7870/ExynosCameraInterface.cpp
+	../../exynos/libcamera/common_v2/ExynosCameraInterface.cpp
 endif
 
 # misc

@@ -54,11 +54,6 @@ public:
     ExynosCamera3SensorSR544();
 };
 
-struct ExynosCamera3SensorSR259 : public ExynosCamera3SensorSR259Base {
-public:
-    ExynosCamera3SensorSR259();
-};
-
 struct ExynosCamera3SensorS5K4H5YC : public ExynosCamera3SensorS5K4H5YCBase {
 public:
     ExynosCamera3SensorS5K4H5YC();
@@ -81,7 +76,7 @@ public:
 
 struct ExynosCamera3SensorS5K3M3 : public ExynosCamera3SensorS5K3M3Base {
 public:
-    ExynosCamera3SensorS5K3M3(int cameraId);
+    ExynosCamera3SensorS5K3M3();
 };
 
 /* Helpper functions */

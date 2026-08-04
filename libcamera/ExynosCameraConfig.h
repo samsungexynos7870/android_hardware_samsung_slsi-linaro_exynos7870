@@ -776,6 +776,7 @@ enum pipeline {
     PIPE_POST_3AA_ISP,
     PIPE_SCC,
     PIPE_GSC,
+    PIPE_GSC_CALLBACK,
     PIPE_GSC_VIDEO,
     PIPE_GSC_VRA,
     PIPE_GSC_PICTURE,

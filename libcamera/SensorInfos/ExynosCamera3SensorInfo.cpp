@@ -43,20 +43,17 @@ struct ExynosSensorInfoBase *createExynosCamera3SensorInfo(int camId)
         sensorInfo = new ExynosCamera3SensorS5K5E3();
         break;
     case SENSOR_NAME_S5K3P3:
-        sensorInfo = new ExynosCamera3SensorS5K3P3(camId);
+        sensorInfo = new ExynosCamera3SensorS5K3P3();
         break;
     case SENSOR_NAME_SR544:
         sensorInfo = new ExynosCamera3SensorSR544();
         break;
-    case SENSOR_NAME_SR259:
-        sensorInfo = new ExynosCamera3SensorSR259();
-        break;
     case SENSOR_NAME_S5K4H5YC:
         sensorInfo = new ExynosCamera3SensorS5K4H5YC();
         break;
-    case SENSOR_NAME_S5K3P8SP:
-        sensorInfo = new ExynosCamera3SensorS5K3P8SP(camId);
-        break;
+//    case SENSOR_NAME_S5K3P8SP:
+//        sensorInfo = new ExynosCamera3SensorS5K3P8SP(camId);
+//        break;
     case SENSOR_NAME_IMX258:
         sensorInfo = new ExynosCamera3SensorIMX258();
         break;
@@ -89,7 +86,7 @@ ExynosCamera3SensorS5K5E3::ExynosCamera3SensorS5K5E3() : ExynosCamera3SensorS5K5
 {
 }
 
-ExynosCamera3SensorS5K3P3::ExynosCamera3SensorS5K3P3(int cameraId) : ExynosCamera3SensorS5K3P3Base(cameraId)
+ExynosCamera3SensorS5K3P3::ExynosCamera3SensorS5K3P3() : ExynosCamera3SensorS5K3P3Base()
 {
 }
 
@@ -97,17 +94,13 @@ ExynosCamera3SensorSR544::ExynosCamera3SensorSR544() : ExynosCamera3SensorSR544B
 {
 }
 
-ExynosCamera3SensorSR259::ExynosCamera3SensorSR259() : ExynosCamera3SensorSR259Base()
-{
-}
-
 ExynosCamera3SensorS5K4H5YC::ExynosCamera3SensorS5K4H5YC() : ExynosCamera3SensorS5K4H5YCBase()
 {
 }
 
-ExynosCamera3SensorS5K3P8SP::ExynosCamera3SensorS5K3P8SP(int cameraId) : ExynosCamera3SensorS5K3P8SPBase(cameraId)
-{
-}
+//ExynosCamera3SensorS5K3P8SP::ExynosCamera3SensorS5K3P8SP(int cameraId) : ExynosCamera3SensorS5K3P8SPBase(cameraId)
+//{
+//}
 
 ExynosCamera3SensorIMX258::ExynosCamera3SensorIMX258() : ExynosCamera3SensorIMX258Base()
 {
