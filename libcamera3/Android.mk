@@ -42,10 +42,10 @@ LOCAL_CFLAGS += -DSAMSUNG_TN_FEATURE
 LOCAL_SHARED_LIBRARIES += libsecnativefeature libuniplugin
 endif
 
-ifeq ($(BOARD_CAMERA_STAINKILLER_FEATURE), true)
-    LOCAL_CFLAGS += -DSTAINKILLER_FEATURE
-    LOCAL_SHARED_LIBRARIES += libstainkiller
-endif
+#ifeq ($(BOARD_CAMERA_STAINKILLER_FEATURE), true)
+#    LOCAL_CFLAGS += -DSTAINKILLER_FEATURE
+#    LOCAL_SHARED_LIBRARIES += libstainkiller
+#endif
 
 ifeq ($(BOARD_CAMERA_SW_VDIS), true)
 LOCAL_SHARED_LIBRARIES += libvdis
@@ -163,8 +163,6 @@ LOCAL_SRC_FILES:= \
     ../../exynos/libcamera/common_v3_7870/PostProcessing/ExynosCameraPPJPEG.cpp \
     ../../exynos/libcamera/common_v3_7870/PostProcessing/ExynosCameraPPGDC.cpp \
     ../../exynos/libcamera/common_v3_7870/PostProcessing/ExynosCameraPPFactory.cpp \
-    ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipeSTK_PICTURE.cpp \
-    ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipeSTK_PREVIEW.cpp \
     ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraPipeVRAGroup.cpp \
     ../../exynos/libcamera/common_v3_7870/Pipes2/ExynosCameraSWPipe.cpp \
     ../../exynos/libcamera/common_v3_7870/Buffers/ExynosCameraBufferManager.cpp \

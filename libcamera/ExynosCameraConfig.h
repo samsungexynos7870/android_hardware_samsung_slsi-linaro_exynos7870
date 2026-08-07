@@ -355,7 +355,7 @@ enum REPROCESSING_BAYER_MODE {
 #endif
 /* #define USE_BUFFER_WITH_STRIDE */
 
-#define OWN_MCSC_HW                 (true)
+#define OWN_MCSC_HW                 (false)
 
 /* back */
 #define MAIN_CAMERA_FLITE_NUM                       FIMC_IS_VIDEO_SS0_NUM
@@ -369,10 +369,10 @@ enum REPROCESSING_BAYER_MODE {
 #define MAIN_CAMERA_SINGLE_3AA_ISP_OTF (true)
 #define MAIN_CAMERA_DUAL_3AA_ISP_OTF   (false)
 
-#define MAIN_CAMERA_SINGLE_MCSC_VRA_OTF (false)
+#define MAIN_CAMERA_SINGLE_MCSC_VRA_OTF (true)
 #define MAIN_CAMERA_DUAL_MCSC_VRA_OTF   (false)
 
-#define MAIN_CAMERA_SINGLE_REPROCESSING  (true)
+#define MAIN_CAMERA_SINGLE_REPROCESSING  (false)
 #define MAIN_CAMERA_SINGLE_SCC_CAPTURE   (false)
 
 #define MAIN_CAMERA_DUAL_REPROCESSING    (false)
@@ -397,10 +397,10 @@ enum REPROCESSING_BAYER_MODE {
 #define FRONT_CAMERA_SINGLE_3AA_ISP_OTF (true)
 #define FRONT_CAMERA_DUAL_3AA_ISP_OTF   (true)
 
-#define FRONT_CAMERA_SINGLE_MCSC_VRA_OTF (false)
+#define FRONT_CAMERA_SINGLE_MCSC_VRA_OTF (true)
 #define FRONT_CAMERA_DUAL_MCSC_VRA_OTF   (false)
 
-#define FRONT_CAMERA_SINGLE_REPROCESSING  (true)
+#define FRONT_CAMERA_SINGLE_REPROCESSING  (false)
 #define FRONT_CAMERA_SINGLE_SCC_CAPTURE   (false)
 
 #define FRONT_CAMERA_DUAL_REPROCESSING    (false)
