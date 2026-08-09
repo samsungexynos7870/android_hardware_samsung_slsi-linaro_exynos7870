@@ -19,7 +19,6 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-BOARD_CAMERA_USES_DUAL_CAMERA := false
 BOARD_CAMERA_GED_FEATURE := true
 
 LOCAL_PROPRIETARY_MODULE := true
@@ -83,8 +82,6 @@ LOCAL_CFLAGS += \
     -DUSE_CAMERA2_API_SUPPORT
 
 LOCAL_CFLAGS += -Wno-tautological-compare
-LOCAL_CFLAGS += -Wno-unused-private-field
-LOCAL_CFLAGS += -Wno-unused-label
 LOCAL_CFLAGS += -Wno-infinite-recursion
 
 LOCAL_C_INCLUDES += \
