@@ -19,13 +19,7 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-ifeq ($(TARGET_BOARD_PLATFORM), universal7870)
-######## System LSI ONLY ########
 BOARD_CAMERA_GED_FEATURE := true
-#################################
-else
-BOARD_CAMERA_GED_FEATURE := false
-endif
 
 # HAL module implemenation stored in
 # hw/<COPYPIX_HARDWARE_MODULE_ID>.<ro.product.board>.so
@@ -51,7 +45,6 @@ LOCAL_C_INCLUDES += \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/SizeTables \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/Sec \
     $(TOP)/hardware/samsung_slsi-linaro/exynos/libcamera/common_v2/Sec/PPUniPlugin \
-	$(TOP)/hardware/samsung_slsi-linaro/exynos/include \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos/include \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos5/include \
 	$(TOP)/hardware/samsung_slsi-linaro/$(TARGET_SOC)/include \
