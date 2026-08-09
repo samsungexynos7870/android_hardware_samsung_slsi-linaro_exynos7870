@@ -284,7 +284,14 @@ enum {
 #define DEFAULT_BNS_RATIO               (1)
 #endif
 
-#define USE_JPEG_HWFC                   (true)
+/* HWFC (hardware jpeg flow control, PIPE_HWFC_*) needs the MCSC-era pipes and its
+ * own framework plumbing - none of it exists on 7870/34xx hardware. With (true),
+ * m_handleJpegFrame() asks the PREVIEW frame factory for
+ * getNodeType(PIPE_HWFC_JPEG_DST_REPROCESSING) (==224) which legitimately hits
+ * the "Unexpected pipe_id" ASSERT and kills the provider AFTER the JPEG encode
+ * already finished -> photo lost (camera_34xx_3 tombstones). JPEG works without
+ * HWFC via PIPE_GSC_PICTURE + PIPE_JPEG (proven: encode done, size 5258502). */
+#define USE_JPEG_HWFC                   (false)
 
 #define USE_PURE_BAYER_REPROCESSING                    (false)
 #define USE_PURE_BAYER_REPROCESSING_ON_RECORDING       (false)
@@ -329,8 +336,14 @@ enum REPROCESSING_BAYER_MODE {
 #define USE_DYNAMIC_SCC_REAR            (false)
 #define USE_DYNAMIC_SCC_FRONT           (false)
 
-#define USE_GSC_FOR_CAPTURE_BACK        (false)
-#define USE_GSC_FOR_CAPTURE_FRONT       (false)
+/* 7870 captures through PIPE_GSC_PICTURE -> PIPE_JPEG (the frame factory builds and
+ * feeds exactly that topology - runtime-proven). With (false), the JPEG handler picks
+ * pipeId_src = PIPE_SCC/PIPE_ISPC, neither of which m_getBufferManager() can map
+ * (provider died on SIGSEGV @0x0 after "Unknown pipeId(9)", camera_34xx_4). The stock
+ * Oreo build proves (true): its m_getBufferManager() likewise cannot map PIPE_SCC/ISPC,
+ * so stock's capture must have used the GSC picture pipe. */
+#define USE_GSC_FOR_CAPTURE_BACK        (true)
+#define USE_GSC_FOR_CAPTURE_FRONT       (true)
 
 #define MAX_SERIES_SHOT_COUNT           (1000)
 
