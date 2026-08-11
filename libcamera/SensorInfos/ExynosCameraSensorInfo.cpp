@@ -246,6 +246,13 @@ ExynosSensorIMX219::ExynosSensorIMX219()
         | EFFECT_BLUE
         | EFFECT_RED_YELLOW
         | EFFECT_AQUA;
+
+    flashModeList = FLASH_MODE_OFF;
+    focusModeList = FOCUS_MODE_INFINITY | FOCUS_MODE_FIXED;
+    maxNumFocusAreas = 0;
+
+    ALOGI("INFO(%s[%d]):IMX219 front HAL1 wrapper ready (3280x2458, fixed-focus, no flash)",
+            __FUNCTION__, __LINE__);
 };
 
 ExynosSensorS5K3M3::ExynosSensorS5K3M3()
