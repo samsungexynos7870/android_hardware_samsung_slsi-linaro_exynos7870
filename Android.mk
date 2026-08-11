@@ -29,6 +29,14 @@ ifeq ($(BOARD_CAMERA_SKIP_HAL3_SOURCE), true)
     exynos7870_dirs := $(filter-out libcamera3,$(exynos7870_dirs))
 endif
 
+ifeq ($(BOARD_CAMERA_SKIP_HAL1_SOURCE), true)
+    exynos7870_dirs := $(filter-out libcamera,$(exynos7870_dirs))
+endif
+
+ifeq ($(BOARD_CAMERA_SKIP_HAL_INTERFACE), true)
+    exynos7870_dirs := $(filter-out libcameraInterface,$(exynos7870_dirs))
+endif
+
 ifeq ($(TARGET_BOARD_CAMERA_DEVICE_VER), Q)
     # do not include libcameraInterface
 else

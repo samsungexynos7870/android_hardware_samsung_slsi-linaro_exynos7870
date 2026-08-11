@@ -108,6 +108,23 @@ ExynosCamera3SensorIMX258::ExynosCamera3SensorIMX258() : ExynosCamera3SensorIMX2
 
 ExynosCamera3SensorIMX219::ExynosCamera3SensorIMX219() : ExynosCamera3SensorIMX219Base()
 {
+    /* A3Y17 front IMX219: no AF actuator, no flash. Kernel modes:
+     * 3280x2458@30, 3280x1846@30, 1640x924@60/15, 1640x1228@60/30/15/7,
+     * 816x604@118, 816x460@120. Only last is advertised as 120 fps. */
+    flashAvailable = ANDROID_FLASH_INFO_AVAILABLE_FALSE;
+    flashModeList = FLASH_MODE_OFF;
+    focusModeList = FOCUS_MODE_INFINITY | FOCUS_MODE_FIXED;
+    maxNumFocusAreas = 0;
+    max3aRegions[AF] = 0;
+    minimumFocusDistance = 0.0f;
+
+    videoSizeLutHighSpeed60Max  = sizeof(VIDEO_SIZE_LUT_60FPS_HIGH_SPEED_IMX219) / (sizeof(int) * SIZE_OF_LUT);
+    videoSizeLutHighSpeed120Max = sizeof(VIDEO_SIZE_LUT_120FPS_HIGH_SPEED_IMX219) / (sizeof(int) * SIZE_OF_LUT);
+    videoSizeLutHighSpeed60     = VIDEO_SIZE_LUT_60FPS_HIGH_SPEED_IMX219;
+    videoSizeLutHighSpeed120    = VIDEO_SIZE_LUT_120FPS_HIGH_SPEED_IMX219;
+
+    ALOGI("INFO(%s[%d]):IMX219 front HAL3 wrapper ready (3280x2458, fixed-focus, no flash)",
+            __FUNCTION__, __LINE__);
 }
 
 ExynosCamera3SensorS5K3M3::ExynosCamera3SensorS5K3M3(int cameraId) : ExynosCamera3SensorS5K3M3Base(cameraId)
