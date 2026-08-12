@@ -108,6 +108,12 @@ ExynosCamera3SensorIMX258::ExynosCamera3SensorIMX258() : ExynosCamera3SensorIMX2
 
 ExynosCamera3SensorIMX219::ExynosCamera3SensorIMX219() : ExynosCamera3SensorIMX219Base()
 {
+    
+    /*
+     * A3Y17 IMX219 front rotation override
+     */
+    orientation = FRONT_ROTATION;
+
     /* A3Y17 front IMX219: no AF actuator, no flash. Kernel modes:
      * 3280x2458@30, 3280x1846@30, 1640x924@60/15, 1640x1228@60/30/15/7,
      * 816x604@118, 816x460@120. Only last is advertised as 120 fps. */
