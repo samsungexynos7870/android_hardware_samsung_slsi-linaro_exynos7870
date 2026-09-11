@@ -29,12 +29,6 @@ LOCAL_SHARED_LIBRARIES:= libutils libcutils libbinder liblog libcamera_metadata_
 LOCAL_SHARED_LIBRARIES += libexynosutils libhwjpeg libexynosv4l2 libexynosgscaler libion libcsc
 LOCAL_SHARED_LIBRARIES += libexpat libc++ libpower libgui_vendor libsensorlistener
 
-# Support for Samsung specific features
-ifeq ($(BOARD_CAMERA_SAMSUNG_TN_FEATURE), true)
-    LOCAL_CFLAGS += -DSAMSUNG_TN_FEATURE
-    LOCAL_SHARED_LIBRARIES += libsecnativefeature libuniplugin
-endif
-
 # Sony specific StainKiller feature
 ifeq ($(BOARD_CAMERA_STAINKILLER_FEATURE), true)
     LOCAL_CFLAGS += -DSTAINKILLER_FEATURE

@@ -44,11 +44,6 @@ LOCAL_SHARED_LIBRARIES := \
     libgui_vendor \
     libsensorlistener
 
-ifeq ($(BOARD_CAMERA_SAMSUNG_TN_FEATURE), true)
-LOCAL_CFLAGS += -DSAMSUNG_TN_FEATURE
-LOCAL_SHARED_LIBRARIES += libsecnativefeature libuniplugin
-endif
-
 ifeq ($(BOARD_CAMERA_STAINKILLER_FEATURE), true)
     LOCAL_CFLAGS += -DSTAINKILLER_FEATURE
     LOCAL_SHARED_LIBRARIES += libstainkiller
