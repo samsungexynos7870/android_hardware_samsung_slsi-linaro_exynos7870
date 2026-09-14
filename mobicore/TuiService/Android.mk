@@ -11,6 +11,7 @@ include $(CLEAR_VARS)
 
 # Module name (sets name of output binary / library)
 LOCAL_MODULE := libTui
+LOCAL_PROPRIETARY_MODULE := true
 
 # Add your source files here (relative paths)
 LOCAL_SRC_FILES += \
@@ -34,7 +35,6 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
-LOCAL_JNI_SHARED_LIBRARIES := libTui
 
 LOCAL_PACKAGE_NAME := TuiService
 LOCAL_MODULE_TAGS := optional
