@@ -3,7 +3,7 @@
 #
 
 # ExySp: Choice TUI availability
-_SUPPORT_TUI := true
+#_SUPPORT_TUI := true
 ifdef _SUPPORT_TUI
 LOCAL_PATH := $(call my-dir)
 
