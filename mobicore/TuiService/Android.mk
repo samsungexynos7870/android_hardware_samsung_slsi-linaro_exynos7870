@@ -40,6 +40,7 @@ LOCAL_PACKAGE_NAME := TuiService
 LOCAL_MODULE_TAGS := optional
 LOCAL_CERTIFICATE := platform
 LOCAL_DEX_PREOPT := false
+LOCAL_PRIVATE_PLATFORM_APIS := true
 
 LOCAL_PROGUARD_FLAGS := -include $(LOCAL_PATH)/proguard-project.txt
 
