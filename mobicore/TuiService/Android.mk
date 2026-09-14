@@ -24,6 +24,7 @@ LOCAL_LDLIBS += -llog
 
 # Undefine NDEBUG to enable LOG_D in log
 LOCAL_CFLAGS += -UNDEBUG
+LOCAL_CFLAGS += -Wno-unused-function
 
 # Needed to use Trustonic logging macros
 LOCAL_SHARED_LIBRARIES := libMcClient
