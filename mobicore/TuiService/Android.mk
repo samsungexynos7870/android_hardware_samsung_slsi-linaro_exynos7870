@@ -28,6 +28,7 @@ LOCAL_CFLAGS += -UNDEBUG
 # Needed to use Trustonic logging macros
 LOCAL_SHARED_LIBRARIES := libMcClient
 LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
+LOCAL_HEADER_LIBRARIES := jni_headers
 
 include $(BUILD_SHARED_LIBRARY)
 
