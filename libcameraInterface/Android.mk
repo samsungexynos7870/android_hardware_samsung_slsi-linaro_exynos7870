@@ -49,7 +49,6 @@ LOCAL_C_INCLUDES += \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos5/include \
 	$(TOP)/hardware/samsung_slsi-linaro/$(TARGET_SOC)/include \
 	$(TOP)/hardware/interfaces/camera/common/1.0/default/include \
-	$(TOP)/external/libcxx/include \
 	$(TOP)/bionic \
 	$(TOP)/frameworks/native/include \
 	$(TOP)/frameworks/native/libs/nativebase/include \

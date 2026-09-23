@@ -100,7 +100,6 @@ LOCAL_C_INCLUDES += \
     $(TOP)/vendor/samsung/feature/CscFeature/libsecnativefeature \
     $(TOP)/bionic \
     $(TOP)/external/expat/lib \
-    $(TOP)/external/libcxx/include \
     $(TOP)/frameworks/av/include \
     $(TOP)/frameworks/av/camera/include \
     $(TOP)/frameworks/native/include \

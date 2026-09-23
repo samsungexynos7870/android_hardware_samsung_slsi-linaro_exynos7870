@@ -33,7 +33,6 @@ LOCAL_C_INCLUDES := \
 	$(TOP)/hardware/samsung_slsi-linaro/exynos7870/mobicore/ClientLib/include
 
 # ExySp
-LOCAL_C_INCLUDES += external/libcxx/include
 LOCAL_C_INCLUDES += hardware/libhardware/include/
 LOCAL_C_INCLUDES += system/core/libsystem/include/
 LOCAL_C_INCLUDES += system/core/libcutils/include_outside_system/
