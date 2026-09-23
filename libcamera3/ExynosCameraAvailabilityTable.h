@@ -18,7 +18,7 @@
 #define EXYNOS_CAMERA_AVAILABILITY_TABLE_H
 
 #include <hardware/camera3.h>
-#include <CameraMetadata.h>
+#include <camera/CameraMetadata.h>
 
 /*
 1. Legacy: [CAPABILITIES_BACKWARD_COMPATIBLE (BC)]
