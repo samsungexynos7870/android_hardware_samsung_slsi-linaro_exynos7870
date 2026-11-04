@@ -1,0 +1,46 @@
+cc_library_shared {
+    name: "libMcClient",
+    proprietary: true,
+    compile_multilib: "both",
+
+    srcs: [
+        "src/common_client.cpp",
+        "src/driver_client.cpp",
+        "src/mc_client_api.cpp",
+        "src/tee_client_api.cpp",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libprotobuf-cpp-lite",
+    ],
+
+    cflags: [
+        "-fvisibility=hidden",
+        "-DTBASE_API_LEVEL=5",
+        "-Wall",
+        "-Wextra",
+        "-std=c++11",
+        "-DLOG_ANDROID",
+        "-DWITHOUT_PROXY",
+        "-DGOOGLE_PROTOBUF_NO_RTTI",
+    ],
+
+    local_include_dirs: [
+        "include",
+        "include/GP",
+    ],
+
+    include_dirs: [
+        "external/protobuf/src",
+    ],
+
+    export_include_dirs: [
+        "include",
+        "include/GP",
+    ],
+
+    export_cflags: [
+        "-DLOG_ANDROID",
+    ],
+}
