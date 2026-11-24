@@ -60,6 +60,9 @@ struct ExynosSensorInfoBase *createExynosCamera1SensorInfo(int camId)
         /* ExynosSensorS5K3M3Base's usable constructor requires cameraId. */
         sensorInfo = new ExynosSensorS5K3M3();
         break;
+    case SENSOR_NAME_S5K2P6:
+        sensorInfo = new ExynosSensorS5K2P6(camId);
+        break;
     default:
         android_printAssert(NULL, LOG_TAG, "ASSERT(%s[%d]):Unknown sensor(%d), create default sensor, assert!!!!",
             __FUNCTION__, __LINE__, camId);
@@ -270,5 +273,48 @@ ExynosSensorS5K3M3::ExynosSensorS5K3M3()
         | EFFECT_AQUA;
 };
 
+
+ExynosSensorS5K2P6::ExynosSensorS5K2P6(int cameraId)
+    : ExynosSensorS5K2P6Base()
+{
+    orientation = (cameraId == CAMERA_ID_FRONT) ? FRONT_ROTATION : BACK_ROTATION;
+
+    if (cameraId == CAMERA_ID_FRONT) {
+        /* a6lte front 2P6 is fixed-focus with no flash */
+        fNumberNum = 19;
+        fNumberDen = 10;
+        apertureNum = 185;
+        apertureDen = 100;
+
+        flashModeList = FLASH_MODE_OFF;
+        focusModeList = FOCUS_MODE_INFINITY | FOCUS_MODE_FIXED;
+        maxNumFocusAreas = 0;
+        maxNumMeteringAreas = 0;
+
+        frontPreviewListMax       = sizeof(S5K2P6_PREVIEW_LIST) / (sizeof(int) * SIZE_OF_RESOLUTION);
+        frontPictureListMax       = sizeof(S5K2P6_PICTURE_LIST) / (sizeof(int) * SIZE_OF_RESOLUTION);
+        hiddenFrontPreviewListMax = sizeof(S5K2P6_HIDDEN_PREVIEW_LIST) / (sizeof(int) * SIZE_OF_RESOLUTION);
+        hiddenFrontPictureListMax = sizeof(S5K2P6_HIDDEN_PICTURE_LIST) / (sizeof(int) * SIZE_OF_RESOLUTION);
+        frontVideoListMax         = sizeof(S5K2P6_VIDEO_LIST) / (sizeof(int) * SIZE_OF_RESOLUTION);
+        hiddenFrontVideoListMax   = sizeof(S5K2P6_HIDDEN_VIDEO_LIST) / (sizeof(int) * SIZE_OF_RESOLUTION);
+        frontFPSListMax           = sizeof(S5K2P6_FPS_RANGE_LIST) / (sizeof(int) * 2);
+        hiddenFrontFPSListMax     = sizeof(S5K2P6_HIDDEN_FPS_RANGE_LIST) / (sizeof(int) * 2);
+
+        frontPreviewList       = S5K2P6_PREVIEW_LIST;
+        frontPictureList       = S5K2P6_PICTURE_LIST;
+        hiddenFrontPreviewList = S5K2P6_HIDDEN_PREVIEW_LIST;
+        hiddenFrontPictureList = S5K2P6_HIDDEN_PICTURE_LIST;
+        frontVideoList         = S5K2P6_VIDEO_LIST;
+        hiddenFrontVideoList   = S5K2P6_HIDDEN_VIDEO_LIST;
+        frontFPSList           = S5K2P6_FPS_RANGE_LIST;
+        hiddenFrontFPSList     = S5K2P6_HIDDEN_FPS_RANGE_LIST;
+    } else {
+        /* a6lte rear 2P6: f/1.7 */
+        fNumberNum = 17;
+        fNumberDen = 10;
+        apertureNum = 153;
+        apertureDen = 100;
+    }
+}
 
 }; /* namespace android */

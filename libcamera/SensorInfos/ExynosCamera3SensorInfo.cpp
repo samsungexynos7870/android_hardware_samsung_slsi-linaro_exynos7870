@@ -63,6 +63,9 @@ struct ExynosSensorInfoBase *createExynosCamera3SensorInfo(int camId)
     case SENSOR_NAME_S5K3M3:
         sensorInfo = new ExynosCamera3SensorS5K3M3(camId);
         break;
+    case SENSOR_NAME_S5K2P6:
+        sensorInfo = new ExynosCamera3SensorS5K2P6(camId);
+        break;
     default:
         android_printAssert(NULL, LOG_TAG, "ASSERT(%s[%d]):Unknown sensor(%d), create default sensor, assert!!!!",
             __FUNCTION__, __LINE__, camId);
@@ -135,6 +138,13 @@ ExynosCamera3SensorIMX219::ExynosCamera3SensorIMX219() : ExynosCamera3SensorIMX2
 
 ExynosCamera3SensorS5K3M3::ExynosCamera3SensorS5K3M3(int cameraId) : ExynosCamera3SensorS5K3M3Base(cameraId)
 {
+}
+
+ExynosCamera3SensorS5K2P6::ExynosCamera3SensorS5K2P6(int cameraId)
+    : ExynosCamera3SensorS5K2P6Base(cameraId)
+{
+    /* The HAL3 base class fills the per-facing metadata (lens
+     * facing, flash, focus, orientation, CCMs). */
 }
 
 };

@@ -107,5 +107,10 @@ public:
     ExynosSensorS5K3M3();
 };
 
+struct ExynosSensorS5K2P6 : public ExynosSensorS5K2P6Base {
+public:
+    ExynosSensorS5K2P6(int cameraId);
+};
+
 }; /* namespace android */
 #endif

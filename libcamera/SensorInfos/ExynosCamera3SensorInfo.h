@@ -82,5 +82,10 @@ public:
 /* Helpper functions */
 struct ExynosSensorInfoBase *createExynosCamera3SensorInfo(int sensorName);
 
+struct ExynosCamera3SensorS5K2P6 : public ExynosCamera3SensorS5K2P6Base {
+public:
+    ExynosCamera3SensorS5K2P6(int cameraId);
+};
+
 }; /* namespace android */
 #endif
